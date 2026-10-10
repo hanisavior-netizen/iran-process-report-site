@@ -440,7 +440,7 @@ tbody tr:hover td, tbody tr:hover th { background: #fcfaf6; }
 
 /* ---------------- فوتر ---------------- */
 body > footer { background: #1b1918; color: rgba(255, 255, 255, .72); padding: 56px var(--gutter) 22px; }
-.footer-main { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); column-gap: 28px; row-gap: 34px; max-width: 1180px; margin-inline: auto; padding-bottom: 40px; border-bottom: 1px solid rgba(255, 255, 255, .12); }
+.footer-main { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); column-gap: 28px; row-gap: 34px; max-width: 1180px; margin-inline: auto; padding-bottom: 40px; border-bottom: 1px solid rgba(255, 255, 255, .12); }
 .footer-brand { display: flex; align-items: center; gap: 14px; grid-column: 1 / -1; min-width: 0; padding-bottom: 28px; border-bottom: 1px solid rgba(255, 255, 255, .12); }
 .footer-brand img { width: 52px; height: 52px; filter: brightness(0) invert(1); }
 .footer-brand strong { color: #fff; font-size: 18px; font-weight: 900; }

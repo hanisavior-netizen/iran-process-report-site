@@ -603,7 +603,7 @@
   function storyView() {
     const S = C.story;
     const sec = (x, i) => `<section class="st-sec" id="story-${i}">
-        <div class="st-head"><span class="st-no">${fa(String(i + 5).padStart(2, '0'))}</span><h2>${esc(x.h)}</h2></div>
+        <div class="st-head"><span class="st-no">${fa(String(i + 3).padStart(2, '0'))}</span><h2>${esc(x.h)}</h2></div>
         <div class="st-body">
           ${(x.p || []).map((t) => `<p>${esc(t)}</p>`).join('')}
           ${x.pull ? `<blockquote class="st-pull">${esc(x.pull)}</blockquote>` : ''}
@@ -615,11 +615,9 @@
         </div>
       </section>`;
     return `<section class="page story-page" id="story" aria-label="${esc(S.title)}">
-      <nav class="st-toc" aria-label="فهرست این صفحه"><a href="#story-project" data-scroll>معرفی پروژه</a><a href="#story-method" data-scroll>روش‌شناسی</a><a href="#story-team" data-scroll>تیم پژوهش</a><a href="#story-partners" data-scroll>همکاران و حامیان</a></nav>
+      <nav class="st-toc" aria-label="فهرست این صفحه"><a href="#story-project" data-scroll>معرفی پروژه</a><a href="#story-method" data-scroll>روش‌شناسی</a></nav>
       <section class="st-sec about-detail" id="story-project"><div class="st-head"><span class="st-no">۰۱</span><h2>معرفی پروژه</h2></div><div class="st-body"><p>${esc(C.about.body[0])}</p><p>${esc(C.about.body[1])}</p></div></section>
       <section class="st-sec about-detail" id="story-method"><div class="st-head"><span class="st-no">۰۲</span><h2>روش‌شناسی</h2></div><div class="st-body"><p>${esc(C.about.body[2])}</p><p>مشارکت‌کنندگان پرسشنامه را به‌صورت اینترنتی و بر پایهٔ اطلاعات خود از سازمانشان تکمیل می‌کنند. این نتیجه‌ها برداشت پاسخ‌دهندگان را نشان می‌دهند و جای ارزیابی مستقلِ وضعیت سازمان‌ها را نمی‌گیرند.</p><h3>این عددها چگونه خوانده می‌شوند؟</h3><ol class="method-list"><li><h4>مبنای درصدها</h4><p>درصد هر گزینه از پاسخ‌های معتبر همان پرسش محاسبه می‌شود. تعداد این پاسخ‌ها کنار نمودار آمده است.</p></li><li><h4>مقایسهٔ سال‌ها</h4><p>متن پرسش، گزینه‌ها و ترکیب پاسخ‌دهندگان را هنگام مقایسه بررسی کنید. موارد دارای تفاوت با علامت △ مشخص شده‌اند.</p></li><li><h4>حریم مشارکت‌کنندگان</h4><p>نتیجه‌ها به‌صورت تجمیعی منتشر می‌شوند؛ نام، شمارهٔ تماس و پاسخ فردی نمایش داده نمی‌شود.</p></li></ol><p class="source-note">منبع داده: پاسخ‌های تجمیعی پرسشنامه‌های سالانهٔ گزارش فرایند ایران.</p></div></section>
-      <section class="st-sec about-detail" id="story-team"><div class="st-head"><span class="st-no">۰۳</span><h2>تیم پژوهش</h2></div><div class="st-body"><p>تیم‌های بهفا و بهفالَب در طراحی پرسشنامه، گردآوری پاسخ‌ها، تحلیل داده و تدوین گزارش همکاری می‌کنند.</p><p>نام اعضای تیم پس از تأیید در این بخش درج می‌شود.</p></div></section>
-      <section class="st-sec about-detail" id="story-partners"><div class="st-head"><span class="st-no">۰۴</span><h2>همکاران و حامیان</h2></div><div class="st-body"><p>بهفا و بهفالَب تهیه‌کنندگان گزارش‌اند. سازمان ملی بهره‌وری ایران در دوره‌های ۱۴۰۱ و ۱۴۰۲ و دانشگاه علم و صنعت ایران در دورهٔ ۱۴۰۳ با پروژه همکاری کرده‌اند.</p><p>اطلاعات همکاری هر دوره در صفحهٔ همان گزارش آمده است.</p></div></section>
       <header class="st-group-heading"><p class="overline">${EN ? 'Research background and use' : 'مسیر پژوهش و کاربرد گزارش'}</p><h2>${EN ? 'From the first question to using the findings' : 'از نخستین پرسش تا استفاده از یافته‌ها'}</h2><p>${EN ? 'The following sections explain why the study began, how it has developed and how to read its findings.' : 'در بخش‌های بعد، چرایی آغاز پژوهش، مسیر دوره‌های آن و شیوهٔ استفاده از یافته‌ها را مرور می‌کنیم.'}</p></header>
       ${S.sections.map(sec).join('')}
       <nav class="st-end"><div><p class="overline">گزارش‌های سالانه</p><h2>خلاصهٔ یافته‌های هر دوره را ببینید</h2></div>
@@ -956,7 +954,6 @@
     const page = pages.find((p) => p.id === id) || pages[0];
     if (!page) return;
     pages.forEach((p) => { p.hidden = p !== page; });
-    document.getElementById('organizers').hidden = !['about', 'story'].includes(page.id);
     const topPage = SECTIONS.some((s) => s.id === page.id) ? 'data' : /^report-/.test(page.id) ? 'reports' : page.id;
     document.querySelectorAll('.section-nav a, .footer-nav a').forEach((a) => { const on = a.dataset.nav === page.id || (a.closest('.section-nav') && a.dataset.nav === topPage); a.classList.toggle('active', on); if (a.closest('.section-nav')) a.setAttribute('aria-current', on ? 'page' : 'false'); });
     document.querySelectorAll('.nav-group').forEach((group) => group.querySelector('.nav-trigger')?.classList.toggle('active', group.dataset.menu === topPage));
@@ -972,7 +969,7 @@
   function routeFromHash(scrollTop) {
     const h = location.hash.slice(1);
     if (h.startsWith('q-q-')) { const q = QUESTIONS.find((x) => `q-${x.id}` === h); if (q) return show(q.section, false, h); }
-    if (['story-project', 'story-method', 'story-team', 'story-partners'].includes(h)) return show('story', false, h);
+    if (['story-project', 'story-method'].includes(h)) return show('story', false, h);
     if (h === 'events') return show('reports', scrollTop);
     const oldEvent = /^event-(\d{4})$/.exec(h);
     if (oldEvent) return show(`report-${oldEvent[1]}`, scrollTop, `annual-${oldEvent[1]}-event`);
@@ -985,7 +982,7 @@
     const overview = (id, label) => `<a class="nav-overview" href="#${id}" data-nav="${id}">${label}</a>`;
     document.getElementById('nav-data').innerHTML = localize(overview('data', 'همهٔ محورهای پژوهش') + SECTIONS.map((s) => `<a href="#${s.id}" data-nav="${s.id}">${EN ? 'Topic' : 'محور'} ${esc(C.chapters[s.id].no)} · ${esc(C.chapters[s.id].title)}</a>`).join(''));
     document.getElementById('nav-reports').innerHTML = localize(overview('reports', EN ? 'All reports and launch events' : 'همهٔ گزارش‌ها و رونمایی‌ها') + [...C.editions].reverse().map((e) => `<a href="#report-${e.year}" data-nav="report-${e.year}">${EN ? `Iran Process Report ${e.year}` : `فرایند ایران ${fa(e.year)}`}</a>`).join(''));
-    document.getElementById('nav-story').innerHTML = localize(overview('story', 'دربارهٔ فرایند ایران') + [['story-project','معرفی پروژه'],['story-method','روش‌شناسی'],['story-team','تیم پژوهش'],['story-partners','همکاران و حامیان']].map(([id, label]) => `<a href="#${id}" data-nav="story" data-target="${id}">${label}</a>`).join(''));
+    document.getElementById('nav-story').innerHTML = localize(overview('story', 'دربارهٔ فرایند ایران') + [['story-project','معرفی پروژه'],['story-method','روش‌شناسی']].map(([id, label]) => `<a href="#${id}" data-nav="story" data-target="${id}">${label}</a>`).join(''));
   }
 
   async function loadData() {
@@ -1110,14 +1107,11 @@
 
   /* ---------- فوتر ---------- */
   function renderFooter() {
-    const k = C.contact, o = C.organizer;
+    const k = C.contact;
     document.getElementById('footer-contact').innerHTML = localize(`<h3>تماس</h3>
       <a href="mailto:${esc(k.email)}" dir="ltr">${esc(k.email)}</a>
       ${k.phones.map((p) => `<a href="tel:${esc(p.tel)}" dir="ltr">${esc(p.label)}</a>`).join('')}
       ${k.address ? (k.map ? `<a href="${esc(k.map)}" target="_blank" rel="noopener noreferrer">${esc(k.address)}</a>` : `<p>${esc(k.address)}</p>`) : ''}`);
-    document.getElementById('footer-org').innerHTML = localize(`<h3>تهیه‌کنندگان</h3>
-      <a class="org" href="${esc(o.url)}" target="_blank" rel="noopener noreferrer"><img src="assets/img/behfa-mark-white.svg" alt="" width="44" height="44"><span><b>بهفا</b><small>${esc(o.legal)}</small></span></a>
-      <a class="org" href="https://behfalab.com/" target="_blank" rel="noopener noreferrer"><img src="assets/img/behfalab-mark-white.svg" alt="" width="44" height="44"><span><b>بهفالَب</b><small>سامانه فرایندکاوی</small></span></a>`);
     document.getElementById('footer-year').textContent = t('۱۴۰۴');
   }
   renderFooter();
