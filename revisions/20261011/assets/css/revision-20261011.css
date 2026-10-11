@@ -106,3 +106,16 @@ html[lang="en"] .intro-year-track { direction: ltr; }
   .about-strip .intro-stat > small { font-size: 12px; }
   .about-strip .intro-stat .intro-stat-note { font-size: 11px; }
 }
+
+/* Minimal home KPIs: a readable label and one primary value. */
+.about-strip .intro-stat { min-height: 180px; padding: 28px 22px; justify-content: center; gap: 16px; }
+.about-strip .intro-stat > .intro-kpi-label { font-size: clamp(16px,1.5vw,20px); line-height: 1.65; font-weight: 700; color: var(--wine); }
+.about-strip .intro-people > .intro-kpi-label { color: #fff; }
+.about-strip .intro-stat .intro-kpi-number { margin: 0; font-size: clamp(42px,4.2vw,62px); }
+.about-strip .intro-kpi-number em { font-size: 20px; }
+@media(max-width:600px) {
+  .about-strip .intro-stat { min-height: 158px; padding: 22px 14px; gap: 12px; }
+  .about-strip .intro-stat > .intro-kpi-label { font-size: 16px; }
+  .about-strip .intro-stat .intro-kpi-number { font-size: 40px; }
+  .about-strip .intro-kpi-number em { font-size: 18px; }
+}
