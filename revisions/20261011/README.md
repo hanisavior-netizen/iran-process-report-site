@@ -24,6 +24,6 @@ English: ?lang=en#about
 
 The booklet and questionnaire results confirm AI questions from the 1402 edition. BPTrends publishes a comparable international survey series: https://bptrends.info/bptrends-surveys/.
 
-The 1404 questionnaire has 512 responses. The available source data do not establish a unique organization count; it must not be inferred from the number of respondents. The organization figure remains pending confirmation.
+The user supplied the original 1404 response workbook. It contains 512 distinct questionnaire IDs and 511 unique respondent name–phone combinations. Of 512 organization fields, one contains only an ellipsis. The remaining 511 entries yield 425 distinct names after Unicode, punctuation and spacing normalization; reconciliation of 26 clear spelling and naming variants yields 399 identifiable organizations. Provincial offices remain distinct. These figures describe this file and the stated reconciliation method.
 
 No raw respondent identity, phone number, email address or private source spreadsheet is included in this package. Download access continues to use the existing full website endpoint.

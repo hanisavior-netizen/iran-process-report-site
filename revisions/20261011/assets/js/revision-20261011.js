@@ -30,7 +30,9 @@
     ['گزارش فرایند ایران.', 'Iran Process Report.'],
     ['وضعیت مدیریت فرایند در سازمان‌های ایرانی', 'The state of process management in Iranian organizations'],
     ['گزارش فرایند ایران | وضعیت مدیریت فرایند در سازمان‌های ایرانی', 'Iran Process Report | The state of process management in Iranian organizations'],
-    ['برای خواندن جزئیات و سنجیدن نتیجه‌ها، دفترچهٔ همان دوره و نمودارهای پرسش‌به‌پرسش را کنار هم ببینید.', 'To explore the details and assess the findings, compare each edition’s booklet with its question-level charts.']
+    ['برای خواندن جزئیات و سنجیدن نتیجه‌ها، دفترچهٔ همان دوره و نمودارهای پرسش‌به‌پرسش را کنار هم ببینید.', 'To explore the details and assess the findings, compare each edition’s booklet with its question-level charts.'],
+    ['در دورهٔ پنجم، ۵۱۱ نفر از ۳۹۹ سازمان شناسایی‌شده، ۵۱۲ پرسشنامهٔ ۱۴۰۴ را تکمیل کرده‌اند. نتیجه‌های آن در محورهای پژوهش کنار سال‌های قبل دیده می‌شوند.', 'In the fifth edition, 511 identified respondents from 399 identifiable organizations completed 512 questionnaires. Their results appear alongside previous years in the research topics.'],
+    ['دفترچهٔ ۱۴۰۴ هنوز رونمایی نشده است. شمار افراد از تطبیق نام و شماره‌تماس و شمار سازمان‌ها از یکسان‌سازی نام‌های ثبت‌شده به دست آمده است.', 'The 1404 booklet has not yet been released. Respondents were counted by matching names and phone numbers, and organizations by reconciling recorded names.']
   ];
   pairs.forEach(([fa, en]) => window.IPR_EN[I.norm(fa).key] = I.norm(en).key);
   C.hero.overline = 'گزارش فرایند ایران';
