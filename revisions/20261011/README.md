@@ -8,7 +8,8 @@ English: ?lang=en#about
 ## Changes
 
 - Full report name throughout navigation, descriptions and report pages.
-- Cover navigation with arrows; covers are not links. Home timeline report links open a new tab.
+- Original stacked cover presentation, with hover/focus selection restored. Home timeline report links open a new tab.
+- Header actions on the right and logo on the left in Persian, mirrored in English.
 - Report introduction with the five core research topics and the international BPTrends reference.
 - Centered, clarified KPI cards; Persian timeline reads right to left. Decorative top strokes and repeat-participation wording removed.
 - FAQ moved to About the report.

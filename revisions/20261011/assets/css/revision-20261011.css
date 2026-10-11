@@ -15,14 +15,7 @@ html[lang="en"] .intro-year-track { direction: ltr; }
 .intro-topics li { padding-inline-start: 16px; border-inline-start: 2px solid var(--gold); font-size: 15px; line-height: 2; }
 .st-body .fact-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px 32px; margin-top: 0; }
 .st-body .fact-grid article { min-width: 0; }
-.cover-browser { display: grid; grid-template-columns: 48px minmax(0,1fr) 48px; align-items: center; gap: 10px; width: 100%; max-width: 550px; direction: ltr; }
-.cover-browser .cover-stage { width: 100%; min-height: 0; aspect-ratio: 635 / 950; }
-.cover-browser .cover { top: 0; left: 0; right: 0; inset-inline-end: auto; width: 100%; transform: translateX(18px) scale(.97); filter: none; opacity: 0; visibility: hidden; pointer-events: none; z-index: 1; }
-.cover-browser .cover.is-picked { transform: none; filter: none; opacity: 1; visibility: visible; z-index: 6; }
-.cover-browser .cover figcaption { opacity: 1; text-align: center; font-size: 13px; }
-.cover-arrow { width: 46px; height: 46px; padding: 11px; border-radius: 50%; border: 1px solid #ffffff65; background: #ffffff12; color: var(--gold); cursor: pointer; }
-.cover-arrow svg,.carousel-arrow svg { width: 100%; height: 100%; stroke: currentColor; stroke-width: 2; fill: none; stroke-linecap: round; stroke-linejoin: round; }
-.cover-arrow:hover { background: var(--gold); color: var(--wine); }
+.carousel-arrow svg { width: 100%; height: 100%; stroke: currentColor; stroke-width: 2; fill: none; stroke-linecap: round; stroke-linejoin: round; }
 .rail-node { text-decoration: none; }
 .rail-story .story-node::before,.rail-story .story-node:hover::before { transform: none; display: none; }
 .rail-story .story-node { transition: none; }
@@ -84,7 +77,6 @@ html[lang="en"] .intro-year-track { direction: ltr; }
 }
 @media (max-width:900px) {
   .page-home .findings > .block-head,.page-home .profile > .block-head { margin-bottom: 0; }
-  .cover-browser { max-width: 440px; }
 }
 @media (max-width:760px) {
   .research-grid,.opt-grid,.annual-kpis,.st-body .fact-grid { grid-template-columns: 1fr; }
@@ -100,8 +92,6 @@ html[lang="en"] .intro-year-track { direction: ltr; }
   .intro-topics li { font-size: 14px; }
 }
 @media (max-width:480px) {
-  .cover-browser { grid-template-columns: 38px minmax(0,1fr) 38px; gap: 6px; }
-  .cover-arrow { width: 38px; height: 38px; padding: 9px; }
   .find-answer { font-size: 11px; }
   .about-strip .intro-stat > small { font-size: 12px; }
   .about-strip .intro-stat .intro-stat-note { font-size: 11px; }
@@ -119,3 +109,6 @@ html[lang="en"] .intro-year-track { direction: ltr; }
   .about-strip .intro-stat .intro-kpi-number { font-size: 40px; }
   .about-strip .intro-kpi-number em { font-size: 18px; }
 }
+/* Actions start at the reading edge; the logo sits at the opposite edge. */
+.masthead > .header-actions { margin-inline-start: 0; }
+.masthead > .brand { margin-inline-start: auto; }

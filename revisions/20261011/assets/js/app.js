@@ -545,13 +545,10 @@
       <div class="hero-actions"><button class="btn btn-gold" type="button" data-open-form>دریافت گزارش</button><a class="btn btn-ghost" href="#about-intro" data-scroll>گزارش فرایند ایران چیست؟</a></div>`;
     const covers = C.editions.filter((e) => e.cover);
     const current = C.editions.find((e) => e.current) || covers.at(-1);
-    const visual = `<div class="cover-browser">
-      <button type="button" class="cover-arrow cover-arrow-left" data-cover-step="${EN ? -1 : 1}" aria-label="${EN ? 'Previous report cover' : 'جلد گزارش بعدی'}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"/></svg></button>
-      <div class="cover-stage" data-active="${current.year}" aria-live="polite">
-        ${covers.map((e) => `<figure class="cover${e.year === current.year ? ' is-picked' : ''}" data-year="${e.year}" aria-hidden="${e.year !== current.year}"><img src="${e.cover}" alt="${EN ? `Cover of Iran Process Report ${e.year}` : `جلد گزارش فرایند ایران ${fa(e.year)}`}" ${e.current ? '' : 'loading="lazy"'}><figcaption>${EN ? 'Iran Process Report' : 'گزارش فرایند ایران'} ${fa(e.year)}</figcaption></figure>`).join('')}
-      </div>
-      <button type="button" class="cover-arrow cover-arrow-right" data-cover-step="${EN ? 1 : -1}" aria-label="${EN ? 'Next report cover' : 'جلد گزارش قبلی'}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
-    </div>`;
+    const visual = `<div class="cover-stage" data-active="${current.year}">
+        ${covers.map((e) => `<a class="cover" href="#report-${e.year}" data-nav="report-${e.year}" data-year="${e.year}" aria-label="صفحه‌ی گزارش ${fa(e.year)}"><img src="${e.cover}" alt="جلد گزارش فرایند ایران ${fa(e.year)}" ${e.current ? '' : 'loading="lazy"'}><span class="cap">صفحه‌ی دوره ${fa(e.year)} ←</span></a>`).join('')}
+        ${C.editions.filter((e) => !e.cover).map((e) => `<a class="cover cover-empty" href="#report-${e.year}" data-nav="report-${e.year}" data-year="${e.year}"><div><b>${fa(e.year)}</b><small>${esc(e.ordinal)}</small>${C.SHOW_PLACEHOLDERS ? '<span class="ph">جلد در انتظار</span>' : ''}</div></a>`).join('')}
+      </div>`;
     const rail = `<div class="rail rail-editions" role="list" aria-label="دوره‌های گزارش فرایند ایران">
         ${C.editions.map((e) => `<a class="rail-node${e.current ? ' is-current is-active' : ''}" href="#report-${e.year}" target="_blank" rel="noopener noreferrer" role="listitem" data-edition="${e.year}" style="--c:${e.color}" aria-label="${EN ? 'Report ' : 'گزارش '}${fa(e.year)}${EN ? ', ' : '، '}${esc(e.ordinal)}">
           <span class="rail-dot"></span>
@@ -1085,15 +1082,33 @@
   });
   document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeMenu(); });
 
-  document.addEventListener('click', event => {
-    const button = event.target.closest('[data-cover-step]');
-    if (!button) return;
-    const stage = document.querySelector('.cover-stage'), covers = [...stage.querySelectorAll('.cover')];
-    const current = covers.findIndex(c => c.dataset.year === stage.dataset.active);
-    const next = covers[(current + Number(button.dataset.coverStep) + covers.length) % covers.length];
-    stage.dataset.active = next.dataset.year;
-    covers.forEach(cover => { const selected = cover === next; cover.classList.toggle('is-picked', selected); cover.setAttribute('aria-hidden', String(!selected)); });
-    document.querySelectorAll('.rail-node[data-edition]').forEach(node => node.classList.toggle('is-active', node.dataset.edition === next.dataset.year));
+  const pickEdition = (year, fromCover = false) => {
+    const stage = document.querySelector('.cover-stage'); if (!stage || !year) return;
+    if (!fromCover) stage.dataset.active = year;
+    stage.classList.toggle('is-interacting', fromCover);
+    stage.querySelectorAll('.cover[data-year]').forEach((cover) => cover.classList.toggle('is-picked', cover.dataset.year === year));
+    document.querySelectorAll('.rail-node[data-edition]').forEach((node) => node.classList.toggle('is-active', node.dataset.edition === year));
+  };
+  const resetEdition = () => pickEdition(C.editions.find((e) => e.current)?.year || C.editions.at(-1)?.year);
+  document.addEventListener('pointerover', (e) => {
+    const cover = e.target.closest('.cover-stage .cover[data-year]');
+    if (cover) { pickEdition(cover.dataset.year, true); return; }
+    const rail = e.target.closest('.rail-node[data-edition]');
+    if (rail) pickEdition(rail.dataset.edition);
+  });
+  document.addEventListener('focusin', (e) => {
+    const cover = e.target.closest('.cover-stage .cover[data-year]');
+    if (cover) { pickEdition(cover.dataset.year, true); return; }
+    const rail = e.target.closest('.rail-node[data-edition]');
+    if (rail) pickEdition(rail.dataset.edition);
+  });
+  document.addEventListener('pointerout', (e) => {
+    const area = e.target.closest('.cover-stage, .rail-editions');
+    if (area && !area.contains(e.relatedTarget)) resetEdition();
+  });
+  document.addEventListener('focusout', (e) => {
+    const stage = e.target.closest('.cover-stage');
+    if (stage && !stage.contains(e.relatedTarget)) resetEdition();
   });
 
   window.addEventListener('hashchange', () => routeFromHash(true));

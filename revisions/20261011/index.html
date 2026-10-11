@@ -18,16 +18,22 @@
   <script src="assets/js/i18n/rebuild-en.js?v=20261005-19"></script>
   <link rel="stylesheet" href="assets/css/styles.css?v=20261010-1">
   <link rel="stylesheet" href="assets/css/access-revision.css?v=20261005-25">
-  <link rel="stylesheet" href="assets/css/revision-20261011.css">
+  <link rel="stylesheet" href="assets/css/revision-20261011.css?v=20261012-2">
 </head>
 <body>
   <div class="loader" id="loader" role="status" aria-label="در حال بارگذاری گزارش فرایند ایران"><div class="stage"><div class="scene"></div></div><p class="loader-skip">برای ورود ضربه بزنید</p></div>
   <a class="skip-link" href="#main">رفتن به محتوای اصلی</a>
 
   <header class="masthead" id="top">
-    <a class="brand" href="#about" data-nav="about" aria-label="گزارش فرایند ایران، صفحهٔ اصلی">
-      <img class="brand-lockup" src="assets/img/ipr-brand-burgundy.svg" alt="" width="259" height="102">
-    </a>
+    <div class="header-actions">
+      <button class="lang-switch" type="button" data-lang-switch aria-label="Change language to English" lang="en">
+        <svg class="lang-swap" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 8h15m0 0-4-4m4 4-4 4M20 16H5m0 0 4-4m-4 4 4 4"/></svg>
+        <span class="lang-switch-label">English</span>
+        <svg class="lang-globe" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.5 4 5.5 4 9s-1.5 6.5-4 9c-2.5-2.5-4-5.5-4-9s1.5-6.5 4-9Z"/></svg>
+      </button>
+      <button class="btn btn-gold header-cta" type="button" data-open-form>دریافت گزارش</button>
+      <button class="menu-button" type="button" aria-expanded="false" aria-controls="section-nav" aria-label="فهرست بخش‌ها"><span aria-hidden="true"><i></i><i></i><i></i></span></button>
+    </div>
     <nav class="section-nav" id="section-nav" aria-label="بخش‌های گزارش فرایند ایران">
       <a class="nav-home" href="#about" data-nav="about" data-en="Home">صفحهٔ اصلی</a>
       <div class="nav-group" data-menu="data">
@@ -43,15 +49,9 @@
         <div class="nav-dropdown" id="nav-story"></div>
       </div>
     </nav>
-    <div class="header-actions">
-      <button class="lang-switch" type="button" data-lang-switch aria-label="Change language to English" lang="en">
-        <svg class="lang-swap" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 8h15m0 0-4-4m4 4-4 4M20 16H5m0 0 4-4m-4 4 4 4"/></svg>
-        <span class="lang-switch-label">English</span>
-        <svg class="lang-globe" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.5 4 5.5 4 9s-1.5 6.5-4 9c-2.5-2.5-4-5.5-4-9s1.5-6.5 4-9Z"/></svg>
-      </button>
-      <button class="btn btn-gold header-cta" type="button" data-open-form>دریافت گزارش</button>
-      <button class="menu-button" type="button" aria-expanded="false" aria-controls="section-nav" aria-label="فهرست بخش‌ها"><span aria-hidden="true"><i></i><i></i><i></i></span></button>
-    </div>
+    <a class="brand" href="#about" data-nav="about" aria-label="گزارش فرایند ایران، صفحهٔ اصلی">
+      <img class="brand-lockup" src="assets/img/ipr-brand-burgundy.svg" alt="" width="259" height="102">
+    </a>
   </header>
 
   <main id="main">
@@ -157,7 +157,7 @@
   <script src="assets/js/downloads.js?v=20261005-26"></script>
   <script src="assets/js/booklets.js?v=20261005-19"></script>
   <script src="assets/js/booklet-reader.js?v=20261005-19"></script>
-  <script src="assets/js/app.js?v=20261011-1"></script>
+  <script src="assets/js/app.js?v=20261012-2"></script>
 </body>
 </html>
 
