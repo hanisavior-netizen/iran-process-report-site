@@ -893,10 +893,10 @@
           <div class="about-body"><p>${esc(A.body[0])}</p><ul class="intro-topics">${A.body.slice(1).map(p => `<li>${esc(p)}</li>`).join('')}</ul><a class="about-more" href="#story" data-nav="story"><span>دربارهٔ روش و پروژه</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"/></svg></a></div>
         </div>
         <ul class="about-strip" aria-label="${EN?'The project at a glance':'پروژه در یک نگاه'}">
-          <li class="intro-stat intro-years"><span class="intro-kpi-label">${EN?'Annual research':'پژوهش سالانه'}</span><b class="intro-kpi-number">${fa(C.editions.length)} <em>${EN?'years':'سال'}</em></b></li>
-          <li class="intro-stat intro-people"><span class="intro-kpi-label">${EN?'Recorded responses':'پاسخ ثبت‌شده'}</span><b class="intro-kpi-number">${fnum(C.profile.total)}</b></li>
-          <li class="intro-stat intro-roles"><span class="intro-kpi-label">${EN?`Managers · ${profileYear}`:`مدیران · ${fa(profileYear)}`}</span><b class="intro-kpi-number">${pct(managerShare)}</b></li>
-          <li class="intro-stat intro-types"><span class="intro-kpi-label">${EN?`Government & governance · ${profileYear}`:`دولتی و حاکمیتی · ${fa(profileYear)}`}</span><b class="intro-kpi-number">${pct(governmentShare)}</b></li>
+          <li class="intro-stat intro-years"><span class="intro-kpi-label">${EN?'Annual research':'پژوهش سالانه و پیوسته'}</span><b class="intro-kpi-number">${fa(C.editions.length)} <em>${EN?'years':'سال'}</em></b><span class="intro-kpi-caption">${EN?'1400–1404':'از ۱۴۰۰ تا ۱۴۰۴'}</span></li>
+          <li class="intro-stat intro-people"><span class="intro-kpi-label">${EN?'Managers & specialists’ participation':'مشارکت مدیران و کارشناسان'}</span><b class="intro-kpi-number">${fnum(C.profile.total)}</b><span class="intro-kpi-caption">${EN?'Completed questionnaires':'پرسشنامهٔ تکمیل‌شده'}</span></li>
+          <li class="intro-stat intro-roles"><span class="intro-kpi-label">${EN?'Who responded in 1404?':'چه کسانی در ۱۴۰۴ پاسخ دادند؟'}</span><div class="intro-kpi-main"><b class="intro-kpi-number">${pct(managerShare)}</b><span>${EN?'Managers':'مدیران'}</span></div><div class="intro-kpi-support"><b>${pct(expertShare)}</b><span>${EN?'Specialists':'کارشناسان'}</span></div></li>
+          <li class="intro-stat intro-types"><span class="intro-kpi-label">${EN?'Organizations in 1404':'سازمان‌های پاسخ‌دهندگان در ۱۴۰۴'}</span><div class="intro-kpi-main"><b class="intro-kpi-number">${pct(governmentShare)}</b><span>${EN?'Government & governance':'دولتی و حاکمیتی'}</span></div><div class="intro-kpi-support"><b>${pct(privateShare)}</b><span>${EN?'Private sector':'بخش خصوصی'}</span></div></li>
         </ul>
       </section>
 
@@ -1022,18 +1022,20 @@
       const name = grid.dataset.carousel, cards = [...grid.children];
       const control = document.querySelector(`[data-carousel-controls="${name}"]`);
       if (!cards.length || !control) return;
-      const panel = grid.parentElement, interval = 16000;
+      const panel = grid.parentElement, interval = 10000;
       let active = 0, elapsed = 0, lastTick = performance.now();
       const label = name === 'findings' ? (EN ? 'Result' : 'نتیجه') : (EN ? 'Respondent chart' : 'نمودار پاسخ‌دهندگان');
       const arrow = right => `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="${right ? 'M5 12h14M13 6l6 6-6 6' : 'M19 12H5M11 6l-6 6 6 6'}"/></svg>`;
-      control.innerHTML = `<button type="button" class="carousel-arrow" data-step="${EN ? -1 : 1}" aria-label="${EN ? 'Previous slide' : 'نمای بعدی'}">${arrow(false)}</button><button type="button" class="carousel-arrow" data-step="${EN ? 1 : -1}" aria-label="${EN ? 'Next slide' : 'نمای قبلی'}">${arrow(true)}</button><span class="sr-only carousel-status" aria-live="polite"></span>`;
+      control.innerHTML = `<button type="button" class="carousel-arrow" data-step="${EN ? -1 : 1}" aria-label="${EN ? 'Previous slide' : 'نمای بعدی'}">${arrow(false)}</button><button type="button" class="carousel-arrow" data-step="${EN ? 1 : -1}" aria-label="${EN ? 'Next slide' : 'نمای قبلی'}">${arrow(true)}</button><div class="carousel-pagination" aria-label="${EN ? 'Choose a slide' : 'انتخاب نما'}">${cards.map((card,i)=>`<button type="button" class="carousel-dot" data-slide="${i}" aria-label="${label} ${fa(i+1)} ${EN?'of':'از'} ${fa(cards.length)}"></button>`).join('')}</div><span class="carousel-status" aria-live="off"></span>`;
       cards.forEach((card, i) => { card.id = `carousel-${name}-${i}`; card.setAttribute('role', 'group'); card.setAttribute('aria-roledescription', EN ? 'slide' : 'نما'); });
       const update = () => {
         cards.forEach((card, i) => { card.classList.toggle('is-active', i === active); card.setAttribute('aria-hidden', String(i !== active)); card.inert = i !== active; });
-        control.querySelector('.carousel-status').textContent = `${label} ${fa(active + 1)} ${EN ? 'of' : 'از'} ${fa(cards.length)}`;
+        control.querySelector('.carousel-status').textContent = `${fa(active + 1)} ${EN ? 'of' : 'از'} ${fa(cards.length)}`;
+        control.querySelectorAll('[data-slide]').forEach((button,i)=>{button.classList.toggle('is-current',i===active);button.setAttribute('aria-current',String(i===active));});
       };
       const advance = step => { active = (active + step + cards.length) % cards.length; elapsed = 0; lastTick = performance.now(); update(); };
       control.querySelectorAll('[data-step]').forEach(button => button.addEventListener('click', () => advance(Number(button.dataset.step))));
+      control.querySelectorAll('[data-slide]').forEach(button=>button.addEventListener('click',()=>advance(Number(button.dataset.slide)-active)));
       panel.addEventListener('keydown', event => {
         if (!['ArrowLeft', 'ArrowRight'].includes(event.key)) return;
         event.preventDefault(); advance((event.key === 'ArrowRight' ? 1 : -1) * (EN ? 1 : -1));

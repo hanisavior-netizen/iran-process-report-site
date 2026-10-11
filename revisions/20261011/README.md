@@ -13,7 +13,11 @@ English: ?lang=en#about
 - Report introduction with the five core research topics and the international BPTrends reference.
 - Centered, clarified KPI cards; Persian timeline reads right to left. Decorative top strokes and repeat-participation wording removed.
 - FAQ moved to About the report.
-- Fixed-size findings and respondent carousels, manual arrows, 16-second automatic rotation, hover/focus pause and reduced-motion support.
+- Fixed-size findings and respondent carousels, manual arrows, page count and direct page selection, 10-second automatic rotation, hover/focus pause and reduced-motion support.
+- Readable explanations for all four home KPI cards; detailed timelines and footnotes remain removed.
+- Mirrored header button order, including download access on small screens.
+- Subtle decorative flow lines in section padding.
+- Floating assistant interface with report/topic context, sources, suggested questions, expand/minimize controls and a session draft with copy/clear controls. Answer generation is not connected; the interface says so and sending is disabled.
 - Clear finding questions with short answer descriptions beside each endpoint percentage.
 - Count tooltips for respondent charts.
 - Research card question headings align within each row; option cards use three desktop columns and centered content.
