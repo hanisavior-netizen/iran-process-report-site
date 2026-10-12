@@ -10,6 +10,7 @@
  const persist=()=>{try{sessionStorage.setItem(storageKey,JSON.stringify(records.slice(-20)));}catch{}};
  const update=()=>{sendButton.disabled=!busy&&!input.value.trim();sendButton.setAttribute('aria-label',busy?t('توقف پاسخ','Stop answer'):t('ارسال پرسش','Send question'));sendButton.classList.toggle('is-stopping',busy);persist();};
  const errors={not_configured:t('دستیار هنوز به موتور پاسخ‌گویی متصل نشده است.','The assistant is not connected to its answer engine yet.'),rate_limit:t('یک دقیقه دیگر دوباره تلاش کنید.','Please try again in a minute.'),busy:t('دستیار مشغول است؛ کمی بعد دوباره تلاش کنید.','The assistant is busy. Please retry shortly.'),stopped:t('پاسخ متوقف شد.','Answer stopped.'),provider_auth:t('اتصال موتور پاسخ‌گویی نیاز به بررسی دارد.','The answer engine connection needs attention.'),provider_rate_limit:t('موتور پاسخ‌گویی موقتاً شلوغ است.','The answer engine is temporarily busy.')};
+ errors.provider_access_blocked=t('اتصال سرور به موتور پاسخ‌گویی موقتاً مسدود شده است. لطفاً بعداً دوباره تلاش کنید.','The server cannot currently reach the answer engine. Please try again later.');
  function rich(element,value,list){
   const pattern=/\[S(\d+)\]|\[([^\]]+)\]\(([^)]+)\)/g;let offset=0,match;
   while((match=pattern.exec(value))){element.append(document.createTextNode(value.slice(offset,match.index)));const source=match[1]?list.find(s=>s.id==='S'+match[1]):null,url=source?.url||match[3];

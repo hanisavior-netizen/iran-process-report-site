@@ -9,6 +9,9 @@
  transition: color .25s,border-color .25s,background .25s,box-shadow .25s,transform .25s;
 }
 #top .lang-switch > * { position: relative; z-index: 1; }
+#top .lang-switch-label,#top .lang-switch-compact { line-height: 1; align-self: center; }
+html[lang="fa"] #top .lang-switch-label,html[lang="fa"] #top .lang-switch-compact { font-family: InterSub,Arial,sans-serif; }
+#top .lang-switch-compact { padding-block: 0; margin-block: 0; }
 #top .lang-switch::before {
  content: ''; position: absolute; z-index: 0; pointer-events: none;
  inset-block: -25%; inset-inline-start: -65%; width: 42%;

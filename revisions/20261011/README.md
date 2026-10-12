@@ -17,7 +17,7 @@ English: ?lang=en#about
 - Readable explanations for all four home KPI cards; detailed timelines and footnotes remain removed.
 - Desktop actions: download, language, then site navigation at the reading edge. Mobile actions: menu, download, compact translation, right to left in Persian and mirrored left to right in English. Rounded language capsule with wine/gold hover, keyboard focus and reduced-motion support.
 - Subtle decorative flow lines and slowly shifting gradients with reduced-motion support. Logo headings align at the top. Assistant placement avoids the footer back-to-top action.
-- Round assistant launcher with hover label, sources, suggested questions, expand/minimize, conversation history, streaming, citations, retry/stop, copy/export and new conversation. The separate Together backend package is prepared; server activation has been deferred by the user. No provider key is stored in the frontend.
+- Round assistant launcher with hover label, sources, suggested questions, expand/minimize, conversation history, streaming, citations, retry/stop, copy/export and new conversation. The Together backend is deployed at irprocessreport.ir; its upstream connection is currently blocked by the provider's Cloudflare. The user deferred resolving that restriction until providing DNS information. No provider key is stored in the frontend.
 - Clear finding questions with short answer descriptions beside each endpoint percentage.
 - Count tooltips for respondent charts.
 - Research card question headings align within each row; option cards use three desktop columns and centered content.
