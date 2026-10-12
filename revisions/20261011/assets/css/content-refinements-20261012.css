@@ -22,6 +22,31 @@
 .profile > .block-head { justify-content: flex-start; }
 .profile .profile-context { margin-block: 22px 0; font-size: 17px; line-height: 2; color: var(--muted); }
 .prof-note { font-size: 14px; line-height: 1.9; }
+.stack-missing { justify-content: center; align-items: center; background: repeating-linear-gradient(135deg,#efebe5,#efebe5 9px,#f7f4ef 9px,#f7f4ef 18px); border: 1px solid #d9d1c5; }
+.stack-missing > span { font-size: 14px; font-weight: 500; color: #6c7378; text-align: center; }
+/* Pagination buttons retain a touch target while displaying only a slim track. */
+.page-home .carousel-controls { flex-wrap: nowrap; gap: 12px; padding-inline: 8px; }
+.page-home .carousel-controls .carousel-pagination { flex: 1; max-width: 230px; gap: 8px; }
+.page-home .carousel-controls .carousel-dot { flex: 1; width: auto; min-width: 20px; height: 38px; padding: 0; border: 0; border-radius: 0; background: transparent; box-shadow: none; position: relative; }
+.page-home .carousel-controls .carousel-dot::before { position: absolute; top: 17px; inset-inline: 0; height: 4px; border-radius: 20px; background: #dacabc; }
+.page-home .carousel-controls .carousel-dot::after { content: ''; position: absolute; top: 17px; left: 0; width: 100%; height: 4px; border-radius: 20px; background: var(--wine); transform: scaleX(0); transform-origin: left; }
+.page-home .carousel-controls .carousel-dot.is-current::after { transform: scaleX(var(--carousel-progress,0)); }
+.page-home .carousel-controls .carousel-dot.is-current::before { background: #c7aa98; height: 4px; }
+.page-home .findings .carousel-dot::before { background: #ffffff30; }
+.page-home .findings .carousel-dot::after { background: var(--gold); }
+.page-home .findings .carousel-dot.is-current::before { background: #ffffff55; }
+.page-home .carousel-controls .carousel-arrow { flex: 0 0 42px; width: 42px; height: 42px; padding: 10px; }
+.page-home .carousel-controls .carousel-dot:focus-visible { outline: 2px solid var(--gold); outline-offset: 0; border-radius: 7px; }
+@media(min-width:1101px) {
+ .page-home .profile > .block-head { align-self: start; min-height: var(--profile-card-height,0px); display: flex; flex-direction: column; }
+ .page-home .profile > .carousel-panel { align-self: start; }
+ .page-home .profile .profile-reading-note { margin-top: auto !important; margin-bottom: 0; }
+}
+@media(max-width:480px) {
+ .page-home .carousel-controls { gap: 8px; }
+ .page-home .carousel-controls .carousel-pagination { max-width: 200px; gap: 6px; }
+ .page-home .carousel-controls .carousel-arrow { flex-basis: 38px; width: 38px; height: 38px; padding: 9px; }
+}
 .profile .profile-reading-note { margin-block-start: 24px !important; padding-top: 20px; }
 .page-home .profile > .block-head { margin-bottom: 0; }
 .intro-topics,.st-list { gap: 16px; }

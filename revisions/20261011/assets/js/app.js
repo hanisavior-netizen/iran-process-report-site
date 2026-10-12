@@ -785,16 +785,17 @@
     const P = C.profile; if (!P) return '';
     const groups = P.groups.map((g) => {
       const ys = Object.keys(g.data);
-      const keys = Object.keys(g.data[ys[0]].counts);
+      const keys = Object.keys(ys.map(y=>g.data[y]).find(d=>d.counts)?.counts || {});
       const rows = ys.map((y) => {
         const d = g.data[y];
+        if(d.missing) return `<div class="stack-row"><div class="stack-year"><b>${fa(y)}</b></div><div class="stack-bar stack-missing"><span>${EN?'Recorded data unavailable':'دادهٔ ثبت‌شده موجود نیست'}</span></div></div>`;
         return `<div class="stack-row"><div class="stack-year"><b>${fa(y)}</b><small>${fnum(d.n)} پرسشنامه تکمیل‌شده</small></div><div class="stack-bar">${keys.map((k, i) => { const v = d.n ? 100 * d.counts[k] / d.n : 0; if (!v) return ''; const c = PROF_COLORS[i % PROF_COLORS.length]; return `<span class="stack-seg prof-seg" style="flex-basis:${v.toFixed(3)}%;--c:${c};--t:${inkOn(c)}" data-tooltip="${esc(k)} · ${fa(y)} · ${pct(v)} · ${fnum(d.counts[k])} ${EN ? 'responses' : 'پاسخ'}" aria-label="${esc(k)} · ${fa(y)} · ${pct(v)} · ${fnum(d.counts[k])} ${EN ? 'responses' : 'پاسخ'}" tabindex="0">${v >= 7 ? `<em>${pct(v)}</em>` : ''}</span>`; }).join('')}</div></div>`;
       }).join('');
       const legend = keys.map((k, i) => `<span class="pl"><i style="background:${PROF_COLORS[i % PROF_COLORS.length]}"></i>${esc(k)}</span>`).join('');
       return `<article class="prof" data-group="${esc(g.id)}"><h3>${esc(g.title)}</h3><div class="stack">${rows}</div><div class="pl-list">${legend}</div>${g.note ? `<p class="prof-note">${esc(g.note)}</p>` : ''}</article>`;
     }).join('');
     return `<section class="block profile" id="profile" aria-labelledby="prof-title">
-      <div class="block-head"><p class="overline">پاسخ‌دهندگان</p><h2 id="prof-title">${esc(P.title)}</h2><p>${esc(P.lead)}</p><p class="profile-context">${esc(P.context)}</p><p class="profile-reading-note">${EN ? 'The mix of completed questionnaires changes between editions. Government and governance organizations accounted for 32% of responses in 1403 and 61% in 1404, while the private-sector share changed from 49% to 30%. These shifts matter when interpreting annual results.' : 'ترکیب پرسشنامه‌های تکمیل‌شده در دوره‌ها یکسان نیست. سهم سازمان‌های دولتی و حاکمیتی از پاسخ‌های ثبت‌شده در ۱۴۰۳، ۳۲٪ و در ۱۴۰۴، ۶۱٪ بوده است؛ سهم بخش خصوصی نیز از ۴۹٪ به ۳۰٪ رسیده است. این تفاوت‌ها در تفسیر نتایج سالانه اهمیت دارند.'}</p></div>
+      <div class="block-head"><p class="overline">پاسخ‌دهندگان</p><h2 id="prof-title">${esc(P.title)}</h2><p>${esc(P.lead)}</p><p class="profile-context">${esc(P.context)}</p><p class="profile-reading-note">${EN ? 'The respondent mix changes between editions: for example, the private-sector share fell from 49% in 1403 to 30% in 1404. This shift matters when comparing annual findings.' : 'ترکیب پاسخ‌دهندگان در دوره‌ها یکسان نیست؛ برای مثال، سهم بخش خصوصی از ۴۹٪ در ۱۴۰۳ به ۳۰٪ در ۱۴۰۴ رسیده است. این تغییر ترکیب، هنگام مقایسهٔ نتایج سالانه اهمیت دارد.'}</p></div>
       <div class="carousel-panel"><div class="profile-tooltip" role="tooltip" hidden></div><div class="prof-grid" data-carousel="profile">${groups}</div>
       <div class="carousel-controls" data-carousel-controls="profile"></div>
       </div>
@@ -1080,19 +1081,21 @@
         control.querySelector('.carousel-status').textContent = `${fa(active + 1)} ${EN ? 'of' : 'از'} ${fa(cards.length)}`;
         control.querySelectorAll('[data-slide]').forEach((button,i)=>{button.classList.toggle('is-current',i===active);button.setAttribute('aria-current',String(i===active));});
       };
-      const advance = step => { active = (active + step + cards.length) % cards.length; elapsed = 0; lastTick = performance.now(); update(); };
+      const paintProgress = () => control.style.setProperty('--carousel-progress',Math.min(1,elapsed/interval).toFixed(4));
+      const advance = step => { active = (active + step + cards.length) % cards.length; elapsed = 0; lastTick = performance.now(); update(); paintProgress(); };
       control.querySelectorAll('[data-step]').forEach(button => button.addEventListener('click', () => advance(Number(button.dataset.step))));
       control.querySelectorAll('[data-slide]').forEach(button=>button.addEventListener('click',()=>advance(Number(button.dataset.slide)-active)));
       panel.addEventListener('keydown', event => {
         if (!['ArrowLeft', 'ArrowRight'].includes(event.key)) return;
         event.preventDefault(); advance(event.key === 'ArrowRight' ? 1 : -1);
       });
-      update();
+      update(); paintProgress();
+      if(name==='profile') { const align=()=>grid.closest('.profile').style.setProperty('--profile-card-height',`${Math.round(grid.getBoundingClientRect().height)}px`); new ResizeObserver(align).observe(grid); align(); }
       if (!matchMedia('(prefers-reduced-motion: reduce)').matches) setInterval(() => {
         const now = performance.now(), delta = now - lastTick; lastTick = now;
         const rect = grid.getBoundingClientRect();
         if (document.hidden || document.getElementById('about')?.hidden || panel.matches(':hover, :focus-within') || rect.bottom < 0 || rect.top > innerHeight) return;
-        elapsed += delta;
+        elapsed += delta; paintProgress();
         if (elapsed >= interval) advance(1);
       }, 150);
     });

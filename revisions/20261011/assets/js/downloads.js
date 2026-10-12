@@ -1,9 +1,10 @@
 (function () {
   'use strict';
   // GitHub Pages hosts static files; the form and protected downloads run on the live site.
+  if (location.hostname.endsWith('.github.io')) {
   const liveDownload = () => {
     const lang = window.IPR_I18N?.lang === 'en' ? 'en' : 'fa';
-    window.location.assign(`https://ipr.45-138-132-214.sslip.io/?lang=${lang}#about`);
+    window.location.assign(`https://irprocessreport.ir/?lang=${lang}#about`);
   };
   window.IPR_DOWNLOADS = {requireAccess: liveDownload};
   document.addEventListener('click', event => {
@@ -12,6 +13,7 @@
     liveDownload();
   });
   return;
+  }
   const EN = window.IPR_I18N.lang === 'en';
   const pick = (fa,en) => EN ? en : fa;
   const modal=document.getElementById('form-modal'), form=document.getElementById('request-form');
