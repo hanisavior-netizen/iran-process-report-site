@@ -237,7 +237,11 @@
     const all = colored(q).filter((o) => ys.some((y) => value(q, y, o.key) != null));
     const shown = all.filter((o) => !st.hidden.has(o.key));
     const narrow = W < 560;
-    const H = narrow ? 300 : 380, mt = 26, mb = 44, ml = narrow ? 40 : 52, mr = narrow ? 64 : 120;
+    const maxLabels = Math.max(0, ...ys.map(y => shown.filter(o => value(q,y,o.key) != null).length));
+    // Expand only as needed to give every displayed value its own readable row.
+    const baseH = narrow ? 300 : 380;
+    const H = Math.max(baseH, (st.labels || !narrow) ? maxLabels * 24 + 100 : baseH);
+    const mt = 26, mb = 44, ml = narrow ? 40 : 52, mr = narrow ? 64 : 120;
     const vals = shown.flatMap((o) => ys.map((y) => value(q, y, o.key))).filter((v) => v != null);
     let lo = 0, hi = 100;
     if (st.scale !== 'full') { hi = Math.min(100, Math.max(10, Math.ceil((Math.max(...vals, 1) + 4) / 10) * 10)); }
@@ -261,7 +265,7 @@
     ys.forEach((year, i) => {
       if (i === ys.length - 1 && !narrow && ys.length > 1) return;
       const labels = shown.filter(o => st.labels || o.key === focus).map(o => ({o, v:value(q, year, o.key)})).filter(l => l.v != null).map(l => ({...l, y:Y(l.v) - 11})).sort((a,b) => a.y - b.y);
-      const gap = 21, top = 15, bottom = H - mb - 10;
+      const gap = 24, top = 18, bottom = H - mb - 12;
       labels.forEach((l,k) => { l.y = Math.max(l.y, k ? labels[k-1].y + gap : top); });
       if (labels.length && labels.at(-1).y > bottom) {
         labels.at(-1).y = bottom;
@@ -286,7 +290,7 @@
     if (!narrow && ys.length > 1) {
       const lastI = ys.length - 1;
       let labs = shown.map((o) => ({ o, v: value(q, ys[lastI], o.key) })).filter((l) => l.v != null).map((l) => ({ ...l, y: Y(l.v) })).sort((a, b) => a.y - b.y);
-      const gap = 17;
+      const gap = 24;
       for (let i = 1; i < labs.length; i++) if (labs[i].y - labs[i - 1].y < gap) labs[i].y = labs[i - 1].y + gap;
       const over = labs.length ? labs.at(-1).y - (H - mb + 6) : 0;
       if (over > 0) labs.forEach((l) => { l.y -= over; });
@@ -364,7 +368,7 @@
     row.closest('.question-card').querySelectorAll('.is-peek-dim').forEach((n) => n.classList.remove('is-peek-dim'));
   });
   document.addEventListener('click', (e) => {
-    const ln = e.target.closest?.('.lines-svg .ln'); if (!ln) return;
+    const ln = e.target.closest?.('.lines-svg .ln, .lines-svg .ln-end'); if (!ln) return;
     const card = ln.closest('.question-card'), q = qById(card.dataset.q), st = stateFor(q);
     st.focus = st.focus === ln.dataset.k ? null : ln.dataset.k; renderCard(card);
   });
@@ -450,6 +454,19 @@
     else if (act === 'copy-table') copyTable(card.querySelector('table')).then(() => toast('جدول کپی شد؛ آن را در Excel یا Word بچسبانید.')).catch(() => toast('مرورگر اجازه کپی نداد.'));
     else if (act === 'copy-img') copyImage(q, st).then(() => toast('نمودار به‌صورت تصویر کپی شد.')).catch(() => toast('مرورگر اجازه کپی تصویر نداد؛ از دکمه دانلود داده استفاده کنید.'));
     else if (act === 'csv') downloadCSV(q);
+  });
+
+  // A click elsewhere releases a pinned line; normal chart controls still work.
+  document.addEventListener('click', event => {
+    const pin=event.target.closest?.('.lines-svg .ln, .lines-svg .ln-end, [data-act="focus"], [data-act="solo"]');
+    event._iprPinCard=pin?.closest('.question-card')?.dataset.q;
+  }, true);
+  document.addEventListener('click', event => {
+    const keep = event._iprPinCard;
+    document.querySelectorAll('.question-card').forEach(card => {
+      const q=qById(card.dataset.q), st=stateFor(q);
+      if (st.focus && card.dataset.q !== keep) { st.focus=null; if(card._done) renderCard(card); }
+    });
   });
 
   // کادر توضیح روی هر رنگ در نمای ترکیب پاسخ‌ها
@@ -620,7 +637,7 @@
           ${(x.p || []).map((t) => `<p>${esc(t)}</p>`).join('')}
           ${x.pull ? `<blockquote class="st-pull">${esc(x.pull)}</blockquote>` : ''}
           ${x.figs ? `<ul class="st-figs">${x.figs.map((f) => `<li><b>${esc(f.v)}</b><span>${esc(f.l)}</span></li>`).join('')}</ul>` : ''}
-          ${x.list ? `<ol class="st-list">${x.list.map((t) => { const k = t.indexOf(':'); return k > 0 && k < 60 ? `<li><b>${esc(t.slice(0, k))}</b>${esc(t.slice(k + 1))}</li>` : `<li>${esc(t)}</li>`; }).join('')}</ol>` : ''}
+          ${x.list ? `<ol class="st-list">${x.list.map((t) => { const special=t.startsWith('هوش مصنوعی:') ? ' class="is-special"' : ''; const k = t.indexOf(':'); return k > 0 && k < 60 ? `<li${special}><b>${esc(t.slice(0, k))}</b>${esc(t.slice(k + 1))}</li>` : `<li>${esc(t)}</li>`; }).join('')}</ol>` : ''}
           ${x.note ? `<p class="st-note">${esc(x.note)}</p>` : ''}
           ${x.chapters ? `<div class="st-years">${x.chapters.map((c) => { const e = edByYear(c.y); return `<article style="--c:${e.color}"><header><b>${fa(c.y)}</b><span>${esc(e.ordinal)}</span></header><h3>${esc(c.h)}</h3><p>${esc(c.p)}</p><a href="#report-${c.y}" data-nav="report-${c.y}">خلاصهٔ این دوره ←</a></article>`; }).join('')}</div>` : ''}
           ${x.ideas ? `<div class="st-ideas">${x.ideas.map((d) => `<article><h3>${esc(d.h)}</h3><p>${esc(d.p)}</p></article>`).join('')}</div>` : ''}
@@ -628,8 +645,8 @@
       </section>`;
     return `<section class="page story-page" id="story" aria-label="${esc(S.title)}">
       <nav class="st-toc" aria-label="فهرست این صفحه"><a href="#story-project" data-scroll>معرفی پروژه</a><a href="#story-method" data-scroll>روش‌شناسی</a><a href="#story-facts" data-scroll>${EN ? 'Questions about the report' : 'پرسش‌های متداول'}</a></nav>
-      <section class="st-sec about-detail" id="story-project"><div class="st-head"><span class="st-no">۰۱</span><h2>معرفی پروژه</h2></div><div class="st-body"><p>${esc(C.about.body[0])}</p><ul class="intro-topics">${C.about.body.slice(1).map(t => `<li>${esc(t)}</li>`).join('')}</ul></div></section>
-      <section class="st-sec about-detail" id="story-method"><div class="st-head"><span class="st-no">۰۲</span><h2>روش‌شناسی</h2></div><div class="st-body"><p>${EN ? 'The annual questionnaire follows five recurring research topics; the 1402 edition introduced a special set of AI questions.' : 'پرسشنامهٔ سالانه پنج محور تکرارشونده را دنبال می‌کند؛ پرسش‌های ویژهٔ هوش مصنوعی از گزارش فرایند ایران ۱۴۰۲ به آن اضافه شده‌اند.'}</p><p>مشارکت‌کنندگان پرسشنامه را به‌صورت اینترنتی و بر پایهٔ اطلاعات خود از سازمانشان تکمیل می‌کنند. این نتیجه‌ها برداشت پاسخ‌دهندگان را نشان می‌دهند و جای ارزیابی مستقلِ وضعیت سازمان‌ها را نمی‌گیرند.</p><h3>این عددها چگونه خوانده می‌شوند؟</h3><ol class="method-list"><li><h4>مبنای درصدها</h4><p>درصد هر گزینه از پاسخ‌های معتبر همان پرسش محاسبه می‌شود. تعداد این پاسخ‌ها کنار نمودار آمده است.</p></li><li><h4>مقایسهٔ سال‌ها</h4><p>متن پرسش، گزینه‌ها و ترکیب پاسخ‌دهندگان را هنگام مقایسه بررسی کنید. موارد دارای تفاوت با علامت △ مشخص شده‌اند.</p></li><li><h4>حریم مشارکت‌کنندگان</h4><p>نتیجه‌ها به‌صورت تجمیعی منتشر می‌شوند؛ نام، شمارهٔ تماس و پاسخ فردی نمایش داده نمی‌شود.</p></li></ol><p class="source-note">منبع داده: پاسخ‌های تجمیعی پرسشنامه‌های سالانهٔ گزارش فرایند ایران.</p></div></section>
+      <section class="st-sec about-detail" id="story-project"><div class="st-head"><span class="st-no">۰۱</span><h2>معرفی پروژه</h2></div><div class="st-body"><div class="project-copy">${C.projectIntro.map(p => `<p>${esc(p)}</p>`).join('')}</div><ul class="intro-topics">${C.about.body.slice(1).map(t => `<li>${esc(t)}</li>`).join('')}</ul></div></section>
+      <section class="st-sec about-detail" id="story-method"><div class="st-head"><span class="st-no">۰۲</span><h2>روش‌شناسی</h2></div><div class="st-body"><p>${EN ? 'The annual questionnaire follows five recurring research topics; the 1402 edition introduced a special set of AI questions.' : 'پرسشنامهٔ سالانه پنج محور تکرارشونده را دنبال می‌کند؛ پرسش‌های ویژهٔ هوش مصنوعی از گزارش فرایند ایران ۱۴۰۲ به آن اضافه شده‌اند.'}</p><p>مشارکت‌کنندگان پرسشنامه را به‌صورت اینترنتی و بر پایهٔ اطلاعات خود از سازمانشان تکمیل می‌کنند. این نتیجه‌ها برداشت پاسخ‌دهندگان را نشان می‌دهند و جای ارزیابی مستقلِ وضعیت سازمان‌ها را نمی‌گیرند.</p><h3>این عددها چگونه خوانده می‌شوند؟</h3><ol class="method-list"><li><h4>مبنای درصدها</h4><p>درصد هر گزینه از پاسخ‌های معتبر همان پرسش محاسبه می‌شود. تعداد این پاسخ‌ها کنار نمودار آمده است.</p></li><li><h4>مقایسهٔ سال‌ها</h4><p>متن پرسش، گزینه‌ها و ترکیب پاسخ‌دهندگان را هنگام مقایسه بررسی کنید. موارد دارای تفاوت با علامت △ مشخص شده‌اند.</p></li><li><h4>حریم مشارکت‌کنندگان</h4><p>نتیجه‌ها به‌صورت تجمیعی منتشر می‌شوند؛ نام، شمارهٔ تماس و پاسخ فردی نمایش داده نمی‌شود.</p></li></ol></div></section>
       <section class="st-sec about-detail" id="story-facts"><div class="st-head"><span class="st-no">۰۳</span><h2>${EN ? 'Questions about the report' : 'پرسش‌های متداول دربارهٔ گزارش'}</h2></div><div class="st-body"><div class="fact-grid">${C.about.facts.map(f => `<article><h3>${esc(f.q)}</h3><p>${esc(f.a)}</p></article>`).join('')}</div></div></section>
       <header class="st-group-heading"><p class="overline">${EN ? 'Research background and use' : 'مسیر پژوهش و کاربرد گزارش'}</p><h2>${EN ? 'From the first question to using the findings' : 'از نخستین پرسش تا استفاده از یافته‌ها'}</h2><p>${EN ? 'The following sections explain why the study began, how it has developed and how to read its findings.' : 'در بخش‌های بعد، چرایی آغاز پژوهش، مسیر دوره‌های آن و شیوهٔ استفاده از یافته‌ها را مرور می‌کنیم.'}</p></header>
       ${S.sections.map(sec).join('')}
@@ -715,7 +732,7 @@
         <div class="annual-interpret"><h3>${EN ? 'What the findings mean' : 'این نتیجه‌ها چه می‌گویند؟'}</h3><p>${esc(text(s.insight))}</p></div>
         <details class="annual-method"><summary>${EN ? 'Sources and calculation notes' : 'منابع و مبنای محاسبهٔ شاخص‌ها'}</summary><p class="annual-source">${esc(text(s.note))}</p><p>${EN ? 'Changes describe differences between response distributions, not changes within a fixed panel of organizations. They do not establish statistical significance or causal relationships.' : 'تغییرها تفاوت توزیع پاسخ‌ها را نشان می‌دهند؛ سازمان‌های یکسانی در همهٔ دوره‌ها دنبال نشده‌اند. از این عددها به‌تنهایی معناداری آماری یا رابطهٔ علّی به دست نمی‌آید.'}</p><a href="#story-method" data-nav="story" data-target="story-method">${EN ? 'Read the methodology →' : 'روش‌شناسی پژوهش ←'}</a></details>
         ${participants.length ? `<details class="annual-participants"><summary>${EN ? 'Who responded in this period' : 'ترکیب پاسخ‌دهندگان این دوره'}</summary><p>${y === '1400' ? (EN ? 'These figures come from printed pages 2–3 of the original 1400 booklet. Rounded role percentages add to 101%. They describe respondents, not all Iranian organizations.' : 'این سهم‌ها از صفحه‌های چاپی ۲ و ۳ دفترچهٔ اصلی ۱۴۰۰ خوانده شده‌اند. جمع درصد سمت‌ها به دلیل گرد کردن، ۱۰۱٪ است. این آمار ترکیب پاسخ‌دهندگان را نشان می‌دهد و قابل تعمیم به همهٔ سازمان‌های ایران نیست.') : (EN ? 'These charts show each group’s share of responses to the corresponding question. They do not support statistical generalization to all Iranian organizations.' : 'این نمودارها سهم هر گروه از پاسخ‌های همان پرسش را نشان می‌دهند و مبنای تعمیم آماری به همهٔ سازمان‌های ایران نیستند.')}</p><div class="annual-participant-grid">${participants.map(chart).join('')}</div></details>` : ''}
-        <section class="annual-event" id="annual-${y}-event" aria-labelledby="annual-${y}-event-title"><p class="overline">${EN ? 'Launch event' : 'رویداد رونمایی'}</p><h3 id="annual-${y}-event-title">${EN ? `Launch of the ${y} report` : `رونمایی گزارش ${fa(y)}`}</h3>${launchVideos.length ? `<p>${EN ? 'Available videos from this report’s launch are listed below.' : 'فیلم‌های موجود از رونمایی این دوره در ادامه آمده‌اند.'}</p><div class="vid-grid annual-event-videos">${launchVideos.map(videoCard).join('')}</div>` : `<p>${e.current ? (EN ? 'The launch of this report is upcoming.' : 'رونمایی این دوره هنوز برگزار نشده است.') : (EN ? 'No launch video is recorded in this site archive for this report.' : 'فیلمی از رونمایی این دوره در آرشیو فعلی سایت ثبت نشده است.')}</p>`}</section>
+        <section class="annual-event" id="annual-${y}-event" aria-labelledby="annual-${y}-event-title"><p class="overline">${EN ? 'Launch event' : 'رویداد رونمایی'}</p><h3 id="annual-${y}-event-title">${EN ? `Launch of the ${y} report` : `رونمایی گزارش ${fa(y)}`}</h3>${launchVideos.length ? `<p>${EN ? 'Available videos from this report’s launch are listed below.' : 'فیلم‌های موجود از رونمایی این دوره در ادامه آمده‌اند.'}</p><div class="vid-grid annual-event-videos">${launchVideos.map(videoCard).join('')}</div>` : `<p>${e.current ? (EN ? 'The launch of this report is upcoming.' : 'رونمایی این دوره هنوز برگزار نشده است.') : (EN ? 'No launch video is recorded in this site archive for this report.' : 'فیلمی از رونمایی این دوره در آرشیو فعلی سایت ثبت نشده است.')}</p>`}${eventGallery(y)}</section>
         <div class="annual-next"><a href="#data" data-nav="data">${EN ? 'Explore research topics →' : 'داده‌ها به تفکیک محور ←'}</a><a href="#reports" data-nav="reports">${EN ? 'All periods →' : 'همهٔ دوره‌ها ←'}</a></div>
       </div>${annualPager(y)}</section>`;
   }
@@ -751,7 +768,7 @@
       return `<article class="prof" data-group="${esc(g.id)}"><h3>${esc(g.title)}</h3><div class="stack">${rows}</div><div class="pl-list">${legend}</div>${g.note ? `<p class="prof-note">${esc(g.note)}</p>` : ''}</article>`;
     }).join('');
     return `<section class="block profile" id="profile" aria-labelledby="prof-title">
-      <div class="block-head"><p class="overline">پاسخ‌دهندگان</p><h2 id="prof-title">${esc(P.title)}</h2><p>${esc(P.lead)}</p><p class="profile-reading-note">${EN ? 'The mix of completed questionnaires changes between editions. Government and governance organizations accounted for 32% of responses in 1403 and 61% in 1404, while the private-sector share changed from 49% to 30%. These shifts matter when interpreting annual results.' : 'ترکیب پرسشنامه‌های تکمیل‌شده در دوره‌ها یکسان نیست. سهم سازمان‌های دولتی و حاکمیتی از پاسخ‌های ثبت‌شده در ۱۴۰۳، ۳۲٪ و در ۱۴۰۴، ۶۱٪ بوده است؛ سهم بخش خصوصی نیز از ۴۹٪ به ۳۰٪ رسیده است. این تفاوت‌ها در تفسیر نتایج سالانه اهمیت دارند.'}</p></div>
+      <div class="block-head"><p class="overline">پاسخ‌دهندگان</p><h2 id="prof-title">${esc(P.title)}</h2><p>${esc(P.lead)}</p><p class="profile-context">${esc(P.context)}</p><p class="profile-reading-note">${EN ? 'The mix of completed questionnaires changes between editions. Government and governance organizations accounted for 32% of responses in 1403 and 61% in 1404, while the private-sector share changed from 49% to 30%. These shifts matter when interpreting annual results.' : 'ترکیب پرسشنامه‌های تکمیل‌شده در دوره‌ها یکسان نیست. سهم سازمان‌های دولتی و حاکمیتی از پاسخ‌های ثبت‌شده در ۱۴۰۳، ۳۲٪ و در ۱۴۰۴، ۶۱٪ بوده است؛ سهم بخش خصوصی نیز از ۴۹٪ به ۳۰٪ رسیده است. این تفاوت‌ها در تفسیر نتایج سالانه اهمیت دارند.'}</p></div>
       <div class="carousel-panel"><div class="profile-tooltip" role="tooltip" hidden></div><div class="prof-grid" data-carousel="profile">${groups}</div>
       <div class="carousel-controls" data-carousel-controls="profile"></div>
       </div>
@@ -869,6 +886,10 @@
       <div class="research-grid">${SECTIONS.map(s=>{ const ch=C.chapters[s.id],qs=QUESTIONS.filter(q=>q.section===s.id);return `<article class="research-card"><div class="research-card-top"><svg viewBox="0 0 24 24" aria-hidden="true">${glyphs[s.id]}</svg><span class="research-card-number">${esc(ch.no)}</span></div><h3>${esc(ch.title)}</h3><p class="research-card-summary">${esc(s.summary)}</p><div class="research-question-preview"><span class="research-question-label">پرسش‌های این محور</span>${qs.slice(0,2).map(q=>`<p>${esc(qText(q))}</p>`).join('')}</div><div class="research-card-foot"><span><b>${fa(qs.length)}</b> ${EN?'questions':'پرسش'}</span><a href="#${s.id}" data-nav="${s.id}">ورود به محور <span aria-hidden="true">←</span></a></div></article>`;}).join('')}</div>
       <p class="research-source-note">آمار ۱۴۰۰ در صفحهٔ گزارش همان سال آمده است؛ دادهٔ پرسش‌به‌پرسشِ قابل مقایسه از ۱۴۰۱ آغاز می‌شود.</p></div>
     </section>`;
+  }
+  function eventGallery(year) {
+    const event=C.eventPhotos?.[year]; if(!event) return '';
+    return `<section class="event-gallery"><h4>${esc('تصاویر رویداد رونمایی')}</h4><p>${esc(event.caption)}</p><div class="event-photo-grid">${event.images.map((src,i)=>`<figure><img src="${src}" alt="${esc(event.caption)} · ${fa(i+1)}" loading="lazy" width="1024" height="683"></figure>`).join('')}</div><a class="event-photo-credit" href="https://behfalab.com/iran-process-report-1404/" target="_blank" rel="noopener noreferrer">${esc('تصاویر و شرح رویداد از بهفالب')}</a></section>`;
   }
   function reportsView() {
     return `<section class="page landing-page" id="reports" aria-labelledby="reports-title">
@@ -1026,7 +1047,7 @@
       let active = 0, elapsed = 0, lastTick = performance.now();
       const label = name === 'findings' ? (EN ? 'Result' : 'نتیجه') : (EN ? 'Respondent chart' : 'نمودار پاسخ‌دهندگان');
       const arrow = right => `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="${right ? 'M5 12h14M13 6l6 6-6 6' : 'M19 12H5M11 6l-6 6 6 6'}"/></svg>`;
-      control.innerHTML = `<button type="button" class="carousel-arrow" data-step="${EN ? -1 : 1}" aria-label="${EN ? 'Previous slide' : 'نمای بعدی'}">${arrow(false)}</button><button type="button" class="carousel-arrow" data-step="${EN ? 1 : -1}" aria-label="${EN ? 'Next slide' : 'نمای قبلی'}">${arrow(true)}</button><div class="carousel-pagination" aria-label="${EN ? 'Choose a slide' : 'انتخاب نما'}">${cards.map((card,i)=>`<button type="button" class="carousel-dot" data-slide="${i}" aria-label="${label} ${fa(i+1)} ${EN?'of':'از'} ${fa(cards.length)}"></button>`).join('')}</div><span class="carousel-status sr-only" aria-live="off"></span>`;
+      control.innerHTML = `<button type="button" class="carousel-arrow" data-step="-1" aria-label="${EN ? 'Previous slide' : 'نمای قبلی'}">${arrow(false)}</button><button type="button" class="carousel-arrow" data-step="1" aria-label="${EN ? 'Next slide' : 'نمای بعدی'}">${arrow(true)}</button><div class="carousel-pagination" aria-label="${EN ? 'Choose a slide' : 'انتخاب نما'}">${cards.map((card,i)=>`<button type="button" class="carousel-dot" data-slide="${i}" aria-label="${label} ${fa(i+1)} ${EN?'of':'از'} ${fa(cards.length)}"></button>`).join('')}</div><span class="carousel-status sr-only" aria-live="off"></span>`;
       cards.forEach((card, i) => { card.id = `carousel-${name}-${i}`; card.setAttribute('role', 'group'); card.setAttribute('aria-roledescription', EN ? 'slide' : 'نما'); });
       const update = () => {
         cards.forEach((card, i) => { card.classList.toggle('is-active', i === active); card.setAttribute('aria-hidden', String(i !== active)); card.inert = i !== active; });
@@ -1038,7 +1059,7 @@
       control.querySelectorAll('[data-slide]').forEach(button=>button.addEventListener('click',()=>advance(Number(button.dataset.slide)-active)));
       panel.addEventListener('keydown', event => {
         if (!['ArrowLeft', 'ArrowRight'].includes(event.key)) return;
-        event.preventDefault(); advance((event.key === 'ArrowRight' ? 1 : -1) * (EN ? 1 : -1));
+        event.preventDefault(); advance(event.key === 'ArrowRight' ? 1 : -1);
       });
       update();
       if (!matchMedia('(prefers-reduced-motion: reduce)').matches) setInterval(() => {

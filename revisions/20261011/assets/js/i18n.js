@@ -32,6 +32,10 @@
     api.miss[key]=input;
     return input;
   };
+  // Normalize display terminology after translation, keeping translation keys intact.
+  const translateText = api.t;
+  api.reportTerms = text => typeof text==='string' ? text.replace(/دفترچه(?:ٔ|‌ی)? گزارش/g,'گزارش').replace(/دفترچه‌ای/g,'گزارشی').replace(/دفترچه(?:ٔ|‌ی)?/g,'گزارش').replace(/\bbooklets\b/gi,'reports').replace(/\bbooklet\b/gi,'report') : text;
+  api.t = input => api.reportTerms(translateText(input));
   const attrs=['placeholder','aria-label','title','alt','data-label','data-title'];
   function visit(node) {
     if(node.nodeType===3) {const value=api.digits(api.t(node.nodeValue));node.nodeValue=lang==='en'?value.replace(/←/g,'→').replace(/↗/g,'↖').replace(/↘/g,'↙'):value;return;}

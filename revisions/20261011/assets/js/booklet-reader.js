@@ -1,13 +1,13 @@
 (function () {
   'use strict';
   const EN=window.IPR_I18N.lang==='en';
-  const label=(fa,en)=>EN?en:fa;
+  const label=(fa,en)=>window.IPR_I18N.reportTerms(EN?en:fa);
   const num=n=>EN?String(n):String(n).replace(/\d/g,d=>'۰۱۲۳۴۵۶۷۸۹'[d]);
   const arrow=direction=>`<svg viewBox="0 0 24 24" aria-hidden="true"><path d="${direction==='left'?'M19 12H5m7-7-7 7 7 7':'M5 12h14m-7-7 7 7-7 7'}"/></svg>`;
   let modal,year,page=1,opener;
   function paint(){
     const count=window.IPR_BOOKLETS[year];
-    modal.querySelector('.rv-title').textContent=label(`دفترچهٔ گزارش فرایند ایران ${num(year)}`,`Iran Process Report ${year} booklet`);
+    modal.querySelector('.rv-title').textContent=label(`گزارش فرایند ایران ${num(year)}`,`Iran Process Report ${year}`);
     const image=modal.querySelector('.rv-img img');image.src=`assets/pages/${year}/${String(page).padStart(2,'0')}.webp`;
     image.alt=label(`صفحهٔ ${num(page)} دفترچهٔ ${num(year)}`,`Page ${page} of the ${year} booklet`);
     modal.querySelector('.rv-count').textContent=label(`صفحهٔ ${num(page)} از ${num(count)}`,`Page ${page} of ${count}`);
