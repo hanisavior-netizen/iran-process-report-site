@@ -19,8 +19,11 @@
 .carousel-controls .carousel-status { font-size: 16px; font-weight: 700; order: 3; min-width: 46px; color: var(--wine); }
 .findings .carousel-controls .carousel-status { color: var(--gold); }
 .carousel-dot:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; border-radius: 6px; }
-/* DOM order is language, download, menu; reading direction mirrors it. */
+/* Desktop actions start with download, then language, at the reading edge. */
 .header-actions { direction: inherit; }
+.header-actions .header-cta { order: 1; }
+.header-actions .lang-switch { order: 2; }
+.header-actions .menu-button { order: 3; }
 @media(max-width:1080px) {
  .menu-button { display: block; flex: none; }
  .section-nav { position: absolute; top: calc(100% + 1px); inset-inline: 0; display: none; grid-template-columns: 1fr 1fr; gap: 8px; padding: 16px var(--gutter); margin: 0; background: #fff; border: 0; border-radius: 0 0 18px 18px; box-shadow: 0 24px 40px #2a060820; }
@@ -88,13 +91,13 @@
 .report-assistant :focus-visible { outline: 2px solid #cd962f; outline-offset: 3px; }
 @media(max-width:600px) { .report-assistant { inset-inline-end: 12px; bottom: 12px; } .assistant-launcher { padding: 12px 15px; font-size: 14px !important; } .assistant-panel { bottom: 61px; max-height: calc(100dvh - 95px); } .assistant-header { padding: 16px; } .assistant-conversation { padding: 18px 16px; } .assistant-toolbar,.assistant-composer { padding-inline: 16px; } }
 
-/* Mobile actions read left to right in BOTH languages. Desktop retains its menu. */
+/* Mobile actions mirror: FA right-to-left, EN left-to-right. */
 .lang-switch-compact { display: none; }
 @media(max-width:1080px) {
- .header-actions { direction: ltr; }
+ .header-actions { direction: inherit; }
  .header-actions .menu-button { order: 1; }
  .header-actions .header-cta { order: 2; }
- .header-actions .lang-switch { order: 3; direction: ltr; width: 54px; min-width: 54px; padding-inline: 8px; gap: 5px; border-radius: 12px; min-height: 40px; background: #fcf7ee; border-color: #5b11152b; color: var(--wine); }
+ .header-actions .lang-switch { order: 3; direction: ltr; width: 58px; min-width: 58px; padding-inline: 8px; gap: 5px; border-radius: 999px; min-height: 40px; background: #fcf7ee; border-color: #5b11152b; color: var(--wine); }
  .header-actions .lang-switch-label,.header-actions .lang-swap { display: none; }
  .header-actions .lang-switch-compact { display: inline; font-size: 13px; font-weight: 800; }
  .header-actions .lang-globe { width: 17px; height: 17px; }

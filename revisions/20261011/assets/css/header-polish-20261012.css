@@ -1,0 +1,43 @@
+/* A compact language capsule, sharing the report's wine, gold and paper palette. */
+#top .header-actions .lang-switch {
+ position: relative; isolation: isolate; overflow: hidden;
+ border-radius: 999px; height: 42px; min-height: 42px;
+ background: linear-gradient(135deg,#fffdf8,#f6eee3);
+ border: 1px solid #c5a07891; color: var(--wine);
+ box-shadow: inset 0 1px 0 #fff,0 3px 10px #5b111508;
+ font-weight: 800; padding-inline: 13px; gap: 8px; direction: ltr;
+ transition: color .25s,border-color .25s,background .25s,box-shadow .25s,transform .25s;
+}
+#top .lang-switch > * { position: relative; z-index: 1; }
+#top .lang-switch::before {
+ content: ''; position: absolute; z-index: 0; pointer-events: none;
+ inset-block: -25%; inset-inline-start: -65%; width: 42%;
+ background: linear-gradient(90deg,transparent,#fff5,transparent);
+ transform: skewX(-18deg); transition: inset-inline-start .6s ease;
+}
+#top .lang-switch .lang-globe { width: 18px; height: 18px; stroke-width: 1.8; transition: transform .35s cubic-bezier(.2,.7,.2,1); }
+#top .lang-switch .lang-swap { width: 15px; height: 15px; opacity: .65; }
+#top .header-actions .lang-switch:focus-visible {
+ background: var(--wine); color: #ffe0a0; border-color: #d5ac67;
+ outline: 2px solid var(--gold); outline-offset: 3px;
+ box-shadow: 0 6px 18px #5b111525;
+}
+#top .lang-switch:focus-visible::before { inset-inline-start: 125%; }
+@media(hover:hover) {
+ #top .header-actions .lang-switch:hover {
+  background: var(--wine); color: #ffe0a0; border-color: #d5ac67;
+  box-shadow: 0 6px 18px #5b111525,inset 0 1px 0 #ffffff1a; transform: translateY(-2px);
+ }
+ #top .lang-switch:hover::before { inset-inline-start: 125%; }
+ #top .lang-switch:hover .lang-globe { transform: rotate(-12deg) scale(1.08); }
+}
+#top .header-actions .lang-switch:active { transform: translateY(0) scale(.98); }
+@media(max-width:1080px) {
+ #top .header-actions .lang-switch { width: 58px; min-width: 58px; height: 40px; min-height: 40px; padding-inline: 7px; gap: 5px; }
+ #top .lang-switch .lang-globe { width: 17px; height: 17px; }
+}
+@media(prefers-reduced-motion:reduce) {
+ #top .header-actions .lang-switch,#top .lang-switch::before,#top .lang-switch .lang-globe { transition: none; }
+ #top .lang-switch::before { display: none; }
+ #top .header-actions .lang-switch:hover,#top .header-actions .lang-switch:active,#top .lang-switch:hover .lang-globe { transform: none; }
+}

@@ -15,7 +15,7 @@ English: ?lang=en#about
 - FAQ moved to About the report.
 - Fixed-size findings and respondent carousels, manual arrows and direct page selection bars (visible numeric counters removed), 10-second automatic rotation, hover/focus pause and reduced-motion support.
 - Readable explanations for all four home KPI cards; detailed timelines and footnotes remain removed.
-- Original desktop navigation; on mobile both languages read left to right: menu, download, compact translation.
+- Desktop actions: download, language, then site navigation at the reading edge. Mobile actions: menu, download, compact translation, right to left in Persian and mirrored left to right in English. Rounded language capsule with wine/gold hover, keyboard focus and reduced-motion support.
 - Subtle decorative flow lines and slowly shifting gradients with reduced-motion support. Logo headings align at the top. Assistant placement avoids the footer back-to-top action.
 - Round assistant launcher with hover label, sources, suggested questions, expand/minimize, conversation history, streaming, citations, retry/stop, copy/export and new conversation. The separate Together backend package is prepared; server activation has been deferred by the user. No provider key is stored in the frontend.
 - Clear finding questions with short answer descriptions beside each endpoint percentage.
