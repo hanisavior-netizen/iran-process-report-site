@@ -6,6 +6,14 @@
 .lrow-d { font-size: 14px; }
 .ln-val { font-size: 13px; stroke-width: 5px; }
 .ln-end text { font-size: 14px; }
+.page-home .find-grid .find-comparison { grid-template-rows: auto minmax(58px,auto) auto; align-items: stretch; gap: 10px; }
+.page-home .find-comparison > div { display: grid; grid-template-rows: subgrid; grid-row: 1 / span 3; align-items: start; justify-items: center; }
+.page-home .find-comparison > div:first-child { grid-column: 1; }
+.page-home .find-comparison > .find-latest { grid-column: 3; }
+.page-home .find-comparison > div > span { font-size: 14px; line-height: 1.7; align-self: stretch; }
+.page-home .find-grid .find-comparison b { font-size: clamp(32px,3.4vw,44px); line-height: 1.3; align-self: center; }
+.page-home .find-comparison .find-answer { margin: 0; align-self: start; }
+.page-home .find-comparison .find-connector { grid-column: 2; grid-row: 2; align-self: center; justify-self: center; }
 .chapter-toc a { grid-template-columns: 42px minmax(0,1fr); gap: 10px; padding-block: 10px; align-items: start; }
 .chapter-toc a span { font-size: 19px; line-height: 1.6; font-weight: 900; min-width: 36px; text-align: center; }
 .golden li::before,.next-chapter span,.question-heading .tag-years,.rp-tag,.find-counter em { font-size: 15px; line-height: 1.7; }
