@@ -1072,6 +1072,9 @@
       if (!cards.length || !control) return;
       const panel = grid.parentElement, interval = 10000;
       let active = 0, elapsed = 0, lastTick = performance.now();
+      let mouseInside = false;
+      panel.addEventListener('pointerenter', event => { if(event.pointerType==='mouse') mouseInside=true; });
+      panel.addEventListener('pointerleave', event => { if(event.pointerType==='mouse') mouseInside=false; });
       const label = name === 'findings' ? (EN ? 'Result' : 'نتیجه') : (EN ? 'Respondent chart' : 'نمودار پاسخ‌دهندگان');
       const arrow = right => `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="${right ? 'M5 12h14M13 6l6 6-6 6' : 'M19 12H5M11 6l-6 6 6 6'}"/></svg>`;
       control.innerHTML = `<button type="button" class="carousel-arrow" data-step="-1" aria-label="${EN ? 'Previous slide' : 'نمای قبلی'}">${arrow(false)}</button><button type="button" class="carousel-arrow" data-step="1" aria-label="${EN ? 'Next slide' : 'نمای بعدی'}">${arrow(true)}</button><div class="carousel-pagination" aria-label="${EN ? 'Choose a slide' : 'انتخاب نما'}">${cards.map((card,i)=>`<button type="button" class="carousel-dot" data-slide="${i}" aria-label="${label} ${fa(i+1)} ${EN?'of':'از'} ${fa(cards.length)}"></button>`).join('')}</div><span class="carousel-status sr-only" aria-live="off"></span>`;
@@ -1094,7 +1097,8 @@
       if (!matchMedia('(prefers-reduced-motion: reduce)').matches) setInterval(() => {
         const now = performance.now(), delta = now - lastTick; lastTick = now;
         const rect = grid.getBoundingClientRect();
-        if (document.hidden || document.getElementById('about')?.hidden || panel.matches(':hover, :focus-within') || rect.bottom < 0 || rect.top > innerHeight) return;
+        const keyboardFocus=panel.contains(document.activeElement) && document.activeElement?.matches(':focus-visible');
+        if (document.hidden || document.getElementById('about')?.hidden || mouseInside || keyboardFocus || rect.bottom < 0 || rect.top > innerHeight) return;
         elapsed += delta; paintProgress();
         if (elapsed >= interval) advance(1);
       }, 150);
