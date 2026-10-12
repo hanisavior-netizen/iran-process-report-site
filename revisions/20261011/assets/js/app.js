@@ -212,6 +212,31 @@
       </article>`;
     }).join('');
     area.innerHTML = localize(`${guide(q, st)}<div class="opt-grid">${cards}</div>`);
+    layoutTrendGrid(area);
+  }
+
+  function layoutTrendGrid(area) {
+    const grid=area.querySelector('.opt-grid'); if(!grid) return;
+    const cards=[...grid.children], n=cards.length, width=area.clientWidth;
+    if(!n) return;
+    const columns=n===1?1:n===4&&width>=540?2:Math.min(n,width>=840?3:width>=540?2:1);
+    const rows=Array.from({length:Math.ceil(n/columns)},(_,i)=>Math.min(columns,n-i*columns));
+    // Balance the final two rows instead of leaving one isolated card on desktop.
+    if(columns===3 && rows.length>1 && rows.at(-1)===1) { rows[rows.length-2]=2; rows[rows.length-1]=2; }
+    grid.style.gridTemplateColumns=`repeat(${columns*2},minmax(0,1fr))`;
+    grid.dataset.columns=String(columns);
+    let index=0;
+    rows.forEach((count,row)=>{
+      const group=cards.slice(index,index+count);
+      group.forEach((card,col)=>{
+        card.style.gridColumn=`${columns-count+1+col*2} / span 2`;
+        card.style.gridRow=String(row+1);
+        card.querySelector('.opt-label').style.minHeight='0';
+      });
+      const labelHeight=Math.max(...group.map(card=>card.querySelector('.opt-label').getBoundingClientRect().height));
+      group.forEach(card=>card.querySelector('.opt-label').style.minHeight=`${Math.ceil(labelHeight)}px`);
+      index+=count;
+    });
   }
 
   /* ---------- نمودار اصلی: همه گزینه‌ها در یک نمودار روند ----------
@@ -386,6 +411,7 @@
     const card = en.target.closest('.question-card'); if (!card?._done) return;
     const w = Math.round(en.contentRect.width); if (card._w === w) return; const first = card._w == null; card._w = w;
     if (!first && stateFor(qById(card.dataset.q)).view === 'lines') renderCard(card);
+    else if (stateFor(qById(card.dataset.q)).view === 'trend') layoutTrendGrid(card.querySelector('.chart-area'));
   })) : null;
 
   function renderCard(card) {

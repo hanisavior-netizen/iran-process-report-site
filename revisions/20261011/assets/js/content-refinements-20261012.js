@@ -26,6 +26,10 @@
  C.about.body=[C.projectIntro[1]+' '+C.projectIntro[2],...C.about.body.slice(1),pairs[8][0]];
  window.IPR_EN[I.norm(C.about.body[0]).key]=I.norm(pairs[5][1]+' '+pairs[6][1]).key;
  C.profile.context=pairs[9][0];
+ const type=C.profile.groups.find(group=>group.id==='type');
+ type.data['1402']={n:808,counts:{'دولتی و حاکمیتی':746,'عمومی غیردولتی':0,'خصوصی':62,'سایر':0}};
+ type.note='دادهٔ ۱۴۰۲ بر پایهٔ ۸۰۸ پاسخ معتبرِ نوع سازمان در فایل پرسشنامه است و با نمودار چاپی این دوره تفاوت دارد. پرسشنامهٔ ۱۴۰۱ ستون جداگانه‌ای برای نوع سازمان ندارد.';
+ window.IPR_EN[I.norm(type.note).key]='The §1 data uses §2 valid organization-type responses in the questionnaire file and differs from the printed report chart. The §3 questionnaire has no separate organization-type field.';
  C.story.lead=C.about.lead;
  C.story.sections[0].p=C.projectIntro.slice(0,3);
  C.story.sections.find(s=>s.h.includes('پنج محور')).list.push(pairs[8][0]);

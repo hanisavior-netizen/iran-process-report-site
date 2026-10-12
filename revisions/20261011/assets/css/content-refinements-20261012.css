@@ -6,8 +6,22 @@
 .lrow-d { font-size: 14px; }
 .ln-val { font-size: 13px; stroke-width: 5px; }
 .ln-end text { font-size: 14px; }
+.chapter-toc a { grid-template-columns: 42px minmax(0,1fr); gap: 10px; padding-block: 10px; align-items: start; }
+.chapter-toc a span { font-size: 19px; line-height: 1.6; font-weight: 900; min-width: 36px; text-align: center; }
+.golden li::before,.next-chapter span,.question-heading .tag-years,.rp-tag,.find-counter em { font-size: 15px; line-height: 1.7; }
+.opt-grid { gap: 18px; align-items: stretch; }
+.opt-grid .opt { min-width: 0; min-height: 278px; padding: 22px 20px 16px; gap: 14px; border-radius: 18px; }
+.opt-grid .opt-label { font-size: 16px; line-height: 1.85; margin: 0; overflow-wrap: anywhere; }
+.opt-grid .opt-num { margin-top: 4px; }
+.opt-grid .opt-num b { font-size: clamp(32px,3vw,42px); }
+.opt-grid .opt-num span { font-size: 14px; }
+.opt-grid .opt-delta { font-size: 13px; line-height: 1.9; padding: 6px 10px; margin: 0; max-width: 100%; flex-wrap: wrap; justify-content: center; text-align: center; }
+.opt-grid .opt-delta i { font-size: 12px; }
+.opt-grid .mini { margin-top: auto; max-height: 145px; }
+.opt-grid[data-columns="1"] > .opt { width: 100%; max-width: 640px; justify-self: center; }
 .profile > .block-head { justify-content: flex-start; }
 .profile .profile-context { margin-block: 22px 0; font-size: 17px; line-height: 2; color: var(--muted); }
+.prof-note { font-size: 14px; line-height: 1.9; }
 .profile .profile-reading-note { margin-block-start: 24px !important; padding-top: 20px; }
 .page-home .profile > .block-head { margin-bottom: 0; }
 .intro-topics,.st-list { gap: 16px; }
