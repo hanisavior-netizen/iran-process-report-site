@@ -11,13 +11,13 @@ English: ?lang=en#about
 - Original stacked cover presentation, with hover/focus selection restored. Home timeline report links open a new tab.
 - Header actions on the right and logo on the left in Persian, mirrored in English.
 - Report introduction with the five core research topics and the international BPTrends reference.
-- Centered, clarified KPI cards; Persian timeline reads right to left. Decorative top strokes and repeat-participation wording removed.
+- Icon-led, legible KPI cards (2,500+ completed questionnaires); Persian timeline reads right to left. Decorative top strokes and repeat-participation wording removed.
 - FAQ moved to About the report.
-- Fixed-size findings and respondent carousels, manual arrows, page count and direct page selection, 10-second automatic rotation, hover/focus pause and reduced-motion support.
+- Fixed-size findings and respondent carousels, manual arrows and direct page selection bars (visible numeric counters removed), 10-second automatic rotation, hover/focus pause and reduced-motion support.
 - Readable explanations for all four home KPI cards; detailed timelines and footnotes remain removed.
-- Mirrored header button order, including download access on small screens.
-- Subtle decorative flow lines in section padding.
-- Floating assistant interface with report/topic context, sources, suggested questions, expand/minimize controls and a session draft with copy/clear controls. Answer generation is not connected; the interface says so and sending is disabled.
+- Original desktop navigation; on mobile both languages read left to right: menu, download, compact translation.
+- Subtle decorative flow lines and slowly shifting gradients with reduced-motion support. Logo headings align at the top. Assistant placement avoids the footer back-to-top action.
+- Round assistant launcher with hover label, sources, suggested questions, expand/minimize, conversation history, streaming, citations, retry/stop, copy/export and new conversation. The separate Together backend package is prepared; server activation has been deferred by the user. No provider key is stored in the frontend.
 - Clear finding questions with short answer descriptions beside each endpoint percentage.
 - Count tooltips for respondent charts.
 - Research card question headings align within each row; option cards use three desktop columns and centered content.
