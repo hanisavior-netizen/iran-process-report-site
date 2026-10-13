@@ -692,7 +692,16 @@
   }
 
   /* ---------- هیروی صفحه‌ی دفترچه ---------- */
+  function launchPage() {
+    const labels=EN?['Days','Hours','Minutes']:['روز','ساعت','دقیقه'];
+    return `<section class="page report-page annual-page" id="report-1404"><div class="annual-wrap release-preview" id="annual-1404-summary"><section id="annual-1404-event"><p class="overline">${EN?'The fifth edition · Launch event':'دورهٔ پنجم · رویداد رونمایی'}</p><h2>${EN?'A new chapter in Iran Process Report':'فصلی تازه در گزارش فرایند ایران'}</h2><p class="release-lead">${EN?'The findings of the 1404 edition will be unveiled on 5 Aban 1405. Until then, discover the research and explore previous editions.':'یافته‌های گزارش ۱۴۰۴ در روز ۵ آبان ۱۴۰۵ رونمایی می‌شوند. تا آن زمان، با مسیر این پژوهش آشنا شوید و گزارش‌های دوره‌های گذشته را مرور کنید.'}</p><div class="release-date"><span>${EN?'Launch date':'زمان رونمایی'}</span><strong>${EN?'October 27, 2026':'۵ آبان ۱۴۰۵'}</strong></div><div class="release-countdown" data-release-countdown aria-label="${EN?'Time until publication':'زمان باقی‌مانده تا انتشار'}">${labels.map(label=>`<div><b data-countdown-value>—</b><span>${label}</span></div>`).join('')}</div><p class="release-time">${EN?'Findings become visible at midnight, Tehran time.':'نتیجه‌های این دوره از ساعت ۰۰:۰۰ آغاز روز ۵ آبان، به وقت تهران، نمایش داده می‌شوند.'}</p><div class="release-actions"><a class="btn btn-wine" href="#story" data-nav="story">${EN?'Discover the research':'آشنایی با پژوهش'}</a><a class="btn btn-outline" href="#report-1403" data-nav="report-1403">${EN?'Explore the 1403 report':'مشاهدهٔ گزارش ۱۴۰۳'}</a></div></section></div>${annualPager('1404')}</section>`;
+  }
   function heroReport(y) {
+    if(y==='1404' && !window.IPR_RELEASE.isPublished()) return {
+      copy:`<div class="hero-kicker"><img src="assets/img/ipr-mark-cream.svg" alt="IPR" width="44" height="40"><div><p class="overline">${EN?'The fifth edition':'دورهٔ پنجم'}</p><p class="edition-pill">${EN?'5 Aban 1405 · October 27, 2026':'۵ آبان ۱۴۰۵ · رویداد رونمایی'}</p></div></div><h1 id="hero-title"><em>${EN?'Iran Process Report 1404':'گزارش فرایند ایران ۱۴۰۴'}</em></h1><p class="hero-lead">${EN?'A fresh look at process management maturity in Iranian organizations. The fifth edition is about to be unveiled.':'نگاهی تازه به وضعیت بلوغ مدیریت فرایند در سازمان‌های ایرانی؛ پنجمین دوره در آستانهٔ رونمایی است.'}</p><div class="hero-actions"><a class="btn btn-gold" href="#annual-1404-event" data-scroll>${EN?'The launch event':'رویداد رونمایی'}</a><a class="btn btn-ghost" href="#story" data-nav="story">${EN?'Discover the research':'آشنایی با پژوهش'}</a></div>`,
+      visual:`<div class="rp-cover" style="--c:#5b1115"><img src="${edByYear(y).cover}" alt="${EN?'Cover of the 1404 report':'جلد گزارش ۱۴۰۴'}"><span class="rp-cover-badge">${EN?'Coming on 5 Aban':'رونمایی در ۵ آبان'}</span></div>`,rail:''
+    };
+
     const ed = edByYear(y), summary = window.IPR_ANNUAL[y];
     const lead = summary.lead[EN ? 1 : 0];
     const copy = `
@@ -712,6 +721,7 @@
     return `<nav class="rp-others" aria-label="${EN?'Other report editions':'دوره‌های دیگر گزارش'}">${card(C.editions[index-1],EN?'Previous edition':'دورهٔ قبل',false)}${C.editions[index+1]?card(C.editions[index+1],EN?'Next edition':'دورهٔ بعد',true):`<a class="rp-other rp-home" href="#about" data-nav="about"><span class="rp-other-copy"><small>${EN?'Back to home':'بازگشت به صفحهٔ اصلی'}</small><b>${esc('گزارش فرایند ایران')}</b></span>${arrow(true)}</a>`}</nav>`;
   }
   function editionPage(y) {
+    if(y==='1404' && !window.IPR_RELEASE.isPublished()) return launchPage();
     const e = edByYear(y), s = window.IPR_ANNUAL[y], participants = window.IPR_PARTICIPANTS?.[y] || [];
     const launchVideos = (C.videos || []).filter((v) => v.year === y && v.id);
     const text = (pair) => pair[EN ? 1 : 0];
@@ -758,7 +768,7 @@
         <div class="annual-interpret"><h3>${EN ? 'What the findings mean' : 'این نتیجه‌ها چه می‌گویند؟'}</h3><p>${esc(text(s.insight))}</p></div>
         <details class="annual-method"><summary>${EN ? 'Sources and calculation notes' : 'منابع و مبنای محاسبهٔ شاخص‌ها'}</summary><p class="annual-source">${esc(text(s.note))}</p><p>${EN ? 'Changes describe differences between response distributions, not changes within a fixed panel of organizations. They do not establish statistical significance or causal relationships.' : 'تغییرها تفاوت توزیع پاسخ‌ها را نشان می‌دهند؛ سازمان‌های یکسانی در همهٔ دوره‌ها دنبال نشده‌اند. از این عددها به‌تنهایی معناداری آماری یا رابطهٔ علّی به دست نمی‌آید.'}</p><a href="#story-method" data-nav="story" data-target="story-method">${EN ? 'Read the methodology →' : 'روش‌شناسی پژوهش ←'}</a></details>
         ${participants.length ? `<details class="annual-participants"><summary>${EN ? 'Who responded in this period' : 'ترکیب پاسخ‌دهندگان این دوره'}</summary><p>${y === '1400' ? (EN ? 'These figures come from printed pages 2–3 of the original 1400 booklet. Rounded role percentages add to 101%. They describe respondents, not all Iranian organizations.' : 'این سهم‌ها از صفحه‌های چاپی ۲ و ۳ دفترچهٔ اصلی ۱۴۰۰ خوانده شده‌اند. جمع درصد سمت‌ها به دلیل گرد کردن، ۱۰۱٪ است. این آمار ترکیب پاسخ‌دهندگان را نشان می‌دهد و قابل تعمیم به همهٔ سازمان‌های ایران نیست.') : (EN ? 'These charts show each group’s share of responses to the corresponding question. They do not support statistical generalization to all Iranian organizations.' : 'این نمودارها سهم هر گروه از پاسخ‌های همان پرسش را نشان می‌دهند و مبنای تعمیم آماری به همهٔ سازمان‌های ایران نیستند.')}</p><div class="annual-participant-grid">${participants.map(chart).join('')}</div></details>` : ''}
-        <section class="annual-event" id="annual-${y}-event" aria-labelledby="annual-${y}-event-title"><p class="overline">${EN ? 'Launch event' : 'رویداد رونمایی'}</p><h3 id="annual-${y}-event-title">${EN ? `Launch of the ${y} report` : `رونمایی گزارش ${fa(y)}`}</h3>${launchVideos.length ? `<p>${EN ? 'Available videos from this report’s launch are listed below.' : 'فیلم‌های موجود از رونمایی این دوره در ادامه آمده‌اند.'}</p><div class="vid-grid annual-event-videos">${launchVideos.map(videoCard).join('')}</div>` : `<p>${e.current ? (EN ? 'The launch of this report is upcoming.' : 'رونمایی این دوره هنوز برگزار نشده است.') : (EN ? 'No launch video is recorded in this site archive for this report.' : 'فیلمی از رونمایی این دوره در آرشیو فعلی سایت ثبت نشده است.')}</p>`}${eventGallery(y)}</section>
+        <section class="annual-event" id="annual-${y}-event" aria-labelledby="annual-${y}-event-title"><p class="overline">${EN ? 'Launch event' : 'رویداد رونمایی'}</p><h3 id="annual-${y}-event-title">${EN ? `Launch of the ${y} report` : `رونمایی گزارش ${fa(y)}`}</h3>${launchVideos.length ? `<p>${EN ? 'Available videos from this report’s launch are listed below.' : 'فیلم‌های موجود از رونمایی این دوره در ادامه آمده‌اند.'}</p><div class="vid-grid annual-event-videos">${launchVideos.map(videoCard).join('')}</div>` : `<p>${e.current && !window.IPR_RELEASE.isPublished() ? (EN ? 'The launch of this report is upcoming.' : 'رونمایی این دوره هنوز برگزار نشده است.') : (EN ? 'No launch video is recorded in this site archive for this report.' : 'فیلمی از رونمایی این دوره در آرشیو فعلی سایت ثبت نشده است.')}</p>`}${eventGallery(y)}</section>
         <div class="annual-next"><a href="#data" data-nav="data">${EN ? 'Explore research topics →' : 'داده‌ها به تفکیک محور ←'}</a><a href="#reports" data-nav="reports">${EN ? 'All periods →' : 'همهٔ دوره‌ها ←'}</a></div>
       </div>${annualPager(y)}</section>`;
   }
@@ -915,15 +925,14 @@
     </section>`;
   }
   function eventGallery(year) {
-    const event=C.eventPhotos?.[year]; if(!event || !event.images.length) return '';
-    const caption=EN ? `Launch of Iran Process Report ${year}` : event.caption;
-    const source=event.source || 'https://behfalab.com/iran-process-report-1404/';
-    return `<section class="event-gallery" data-event-gallery><header class="event-gallery-head"><div><p class="overline">${EN?'In pictures':'روایت تصویری'}</p><h4>${EN?'Moments from the report launch':'لحظه‌هایی از رونمایی گزارش'}</h4><p>${esc(caption)}</p></div><span class="event-gallery-count">${fa(event.images.length)} ${EN?'photos':'تصویر'}</span></header><figure class="event-photo-stage"><button type="button" class="event-photo-expand" aria-label="${EN?'View full photo':'نمایش کامل تصویر'}"><img src="${event.images[0]}" alt="${esc(caption)}" loading="lazy" width="1024" height="683"><span>${EN?'View full photo ↗':'نمایش کامل تصویر ↗'}</span></button></figure><div class="event-photo-thumbs" role="group" aria-label="${EN?'Choose a photo':'انتخاب تصویر'}">${event.images.map((src,i)=>`<button type="button" data-event-photo="${src}" aria-pressed="${i===0}" aria-label="${EN?'Photo':'تصویر'} ${fa(i+1)}"><img src="${src}" alt="" loading="lazy" width="180" height="120"></button>`).join('')}</div><footer class="event-gallery-footer"><span>${EN?'Select a thumbnail to explore the event.':'برای دیدن لحظه‌های دیگر، تصویر دلخواه را انتخاب کنید.'}</span><a class="event-photo-credit" href="${esc(source)}" target="_blank" rel="noopener noreferrer">${year==='1402'?(EN?'Photos: IRNA · Marzieh Soleimani':'عکس‌ها: ایرنا · مرضیه سلیمانی'):(EN?'Photos and event story: BehfaLab':'تصاویر و شرح رویداد از بهفالب')} ↗</a></footer></section>`;
+    const event=C.eventPhotos?.[year]; if(!event?.images.length) return '';
+    const caption=EN ? event.captionEn : event.caption;
+    return `<section class="event-gallery" data-event-gallery aria-label="${esc(caption)}"><header class="event-gallery-head"><div><p class="overline">${EN?'In pictures':'روایت تصویری'}</p><h4>${EN?'Moments from the report launch':'لحظه‌هایی از رونمایی گزارش'}</h4><p>${esc(caption)}</p></div><span class="event-gallery-count">${fa(event.images.length)} ${EN?'photos':'تصویر'}</span></header><div class="event-gallery-layout"><figure class="event-photo-stage"><button type="button" class="event-photo-expand" aria-label="${EN?'View full photo':'نمایش کامل تصویر'}"><img src="${event.images[0]}" alt="${esc(caption)}" loading="lazy" width="1024" height="683"><span>${EN?'View full photo ↗':'نمایش کامل تصویر ↗'}</span></button><figcaption><span>${esc(caption)}</span><b data-photo-position aria-live="polite">${fa(1)} / ${fa(event.images.length)}</b></figcaption></figure><div class="event-gallery-picker"><div class="event-picker-title">${EN?'Explore the event':'قاب‌های رویداد'}</div><div class="event-photo-thumbs" role="group" aria-label="${EN?'Choose a photo':'انتخاب تصویر'}">${event.images.map((url,i)=>`<button type="button" data-event-photo="${url}" aria-pressed="${i===0}" aria-label="${EN?'Photo':'تصویر'} ${fa(i+1)}"><img src="${url}" alt="" loading="lazy" width="180" height="120"><span aria-hidden="true">${fa(String(i+1).padStart(2,'0'))}</span></button>`).join('')}</div></div></div><footer class="event-gallery-footer"><span>${EN?'Click a photograph to see it in full.':'هر عکس را می‌توانید در اندازهٔ کامل ببینید.'}</span><div class="event-photo-credits">${event.sources.map(source=>`<a href="${source.url}" target="_blank" rel="noopener noreferrer">${esc(EN?source.en:source.fa)} ↗</a>`).join('')}</div></footer></section>`;
   }
   function reportsView() {
     return `<section class="page landing-page" id="reports" aria-labelledby="reports-title">
       <header class="landing-head"><p class="overline">${EN ? 'Annual reports & launch events' : 'گزارش‌ها و رونمایی‌ها'}</p><h1 id="reports-title">${EN ? 'Reports from 1400 to 1404' : 'گزارش‌های ۱۴۰۰ تا ۱۴۰۴'}</h1><p>${EN ? 'Each report brings together its key findings, response figures and available launch videos.' : 'در صفحهٔ هر دوره، خلاصهٔ یافته‌ها، شاخص‌های کلیدی و فیلم‌های موجود از رونمایی همان گزارش را می‌بینید.'}</p></header>
-      <div class="year-grid">${[...C.editions].reverse().map((e) => `<article class="year-card" style="--c:${e.color}"><a class="year-card-cover" href="#report-${e.year}" data-nav="report-${e.year}" aria-label="${EN ? `Open the ${e.year} report` : `گزارش ${fa(e.year)}`}"><img src="${e.cover}" alt="${EN ? `Cover of the ${e.year} report` : `جلد گزارش ${fa(e.year)}`}" loading="lazy"></a><div class="year-card-copy"><small>${esc(e.ordinal)}</small><b>${EN ? `Iran Process Report ${e.year}` : `گزارش فرایند ایران ${fa(e.year)}`}</b><div class="year-card-actions">${bookletActions(e.year)}<a href="#report-${e.year}" data-nav="report-${e.year}">${EN ? 'Summary' : 'خلاصه'}</a><a href="#annual-${e.year}-event" data-nav="report-${e.year}" data-target="annual-${e.year}-event">${e.current ? (EN ? 'Coming soon' : 'به‌زودی') : (EN ? 'Launch' : 'رونمایی')}</a></div></div></article>`).join('')}</div>
+      <div class="year-grid">${[...C.editions].reverse().map((e) => `<article class="year-card" style="--c:${e.color}"><a class="year-card-cover" href="#report-${e.year}" data-nav="report-${e.year}" aria-label="${EN ? `Open the ${e.year} report` : `گزارش ${fa(e.year)}`}"><img src="${e.cover}" alt="${EN ? `Cover of the ${e.year} report` : `جلد گزارش ${fa(e.year)}`}" loading="lazy"></a><div class="year-card-copy"><small>${esc(e.ordinal)}</small><b>${EN ? `Iran Process Report ${e.year}` : `گزارش فرایند ایران ${fa(e.year)}`}</b><div class="year-card-actions">${bookletActions(e.year)}<a href="#report-${e.year}" data-nav="report-${e.year}">${EN ? 'Summary' : 'خلاصه'}</a><a href="#annual-${e.year}-event" data-nav="report-${e.year}" data-target="annual-${e.year}-event">${e.current && !window.IPR_RELEASE.isPublished() ? (EN ? 'Coming soon' : 'به‌زودی') : (EN ? 'Launch' : 'رونمایی')}</a></div></div></article>`).join('')}</div>
     </section>`;
   }
 
@@ -1113,6 +1122,7 @@
     SECTIONS = data.sections; QUESTIONS = data.questions; YEARS = data.meta.years;
     buildSiteNav();
     document.getElementById('view').innerHTML = localize(homeView() + dataView() + reportsView() + SECTIONS.map((s, i) => chapterView(s, i)).join('') + storyView() + C.editions.map((e) => editionPage(e.year)).join(''));
+    document.dispatchEvent(new CustomEvent('ipr:site-ready'));
     mountCards(document.getElementById('view'));
     setupCarousels();
     if (performance.getEntriesByType('navigation')[0]?.type === 'reload') history.replaceState(null, '', location.pathname + location.search);
@@ -1169,6 +1179,14 @@
     if (stage && !stage.contains(e.relatedTarget)) resetEdition();
   });
 
+  document.addEventListener('ipr:report-release', () => {
+    const current=document.getElementById('report-1404');
+    if(!current) return;
+    const visible=!current.hidden;
+    current.outerHTML=localize(editionPage('1404'));
+    document.getElementById('report-1404').hidden=!visible;
+    if(visible) renderHero('report-1404');
+  });
   window.addEventListener('hashchange', () => routeFromHash(true));
   const mast = document.querySelector('.masthead');
   const onScroll = () => {
