@@ -915,8 +915,10 @@
     </section>`;
   }
   function eventGallery(year) {
-    const event=C.eventPhotos?.[year]; if(!event) return '';
-    return `<section class="event-gallery"><h4>${esc('تصاویر رویداد رونمایی')}</h4><p>${esc(event.caption)}</p><div class="event-photo-grid">${event.images.map((src,i)=>`<figure><img src="${src}" alt="${esc(event.caption)} · ${fa(i+1)}" loading="lazy" width="1024" height="683"></figure>`).join('')}</div><a class="event-photo-credit" href="https://behfalab.com/iran-process-report-1404/" target="_blank" rel="noopener noreferrer">${esc('تصاویر و شرح رویداد از بهفالب')}</a></section>`;
+    const event=C.eventPhotos?.[year]; if(!event || !event.images.length) return '';
+    const caption=EN ? `Launch of Iran Process Report ${year}` : event.caption;
+    const source=event.source || 'https://behfalab.com/iran-process-report-1404/';
+    return `<section class="event-gallery" data-event-gallery><header class="event-gallery-head"><div><p class="overline">${EN?'In pictures':'روایت تصویری'}</p><h4>${EN?'Moments from the report launch':'لحظه‌هایی از رونمایی گزارش'}</h4><p>${esc(caption)}</p></div><span class="event-gallery-count">${fa(event.images.length)} ${EN?'photos':'تصویر'}</span></header><figure class="event-photo-stage"><button type="button" class="event-photo-expand" aria-label="${EN?'View full photo':'نمایش کامل تصویر'}"><img src="${event.images[0]}" alt="${esc(caption)}" loading="lazy" width="1024" height="683"><span>${EN?'View full photo ↗':'نمایش کامل تصویر ↗'}</span></button></figure><div class="event-photo-thumbs" role="group" aria-label="${EN?'Choose a photo':'انتخاب تصویر'}">${event.images.map((src,i)=>`<button type="button" data-event-photo="${src}" aria-pressed="${i===0}" aria-label="${EN?'Photo':'تصویر'} ${fa(i+1)}"><img src="${src}" alt="" loading="lazy" width="180" height="120"></button>`).join('')}</div><footer class="event-gallery-footer"><span>${EN?'Select a thumbnail to explore the event.':'برای دیدن لحظه‌های دیگر، تصویر دلخواه را انتخاب کنید.'}</span><a class="event-photo-credit" href="${esc(source)}" target="_blank" rel="noopener noreferrer">${year==='1402'?(EN?'Photos: IRNA · Marzieh Soleimani':'عکس‌ها: ایرنا · مرضیه سلیمانی'):(EN?'Photos and event story: BehfaLab':'تصاویر و شرح رویداد از بهفالب')} ↗</a></footer></section>`;
   }
   function reportsView() {
     return `<section class="page landing-page" id="reports" aria-labelledby="reports-title">

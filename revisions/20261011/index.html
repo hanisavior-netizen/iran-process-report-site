@@ -22,6 +22,8 @@
   <link rel="stylesheet" href="assets/css/home-refinements-20261012.css?v=4">
   <link rel="stylesheet" href="assets/css/header-polish-20261012.css?v=2">
   <link rel="stylesheet" href="assets/css/content-refinements-20261012.css?v=4">
+  <link rel="stylesheet" href="assets/css/event-gallery-20261013.css">
+  <link rel="stylesheet" href="assets/css/event-welcome-20261013.css">
 </head>
 <body>
   <div class="loader" id="loader" role="status" aria-label="در حال بارگذاری گزارش فرایند ایران"><div class="stage"><div class="scene"></div></div><p class="loader-skip">برای ورود ضربه بزنید</p></div>
@@ -146,6 +148,22 @@
       <div class="video-frame"></div>
     </section>
   </div>
+  <dialog class="event-welcome" id="event-welcome" aria-labelledby="event-welcome-title" aria-describedby="event-welcome-copy">
+    <button class="event-welcome-close" type="button" aria-label="بستن پنجره">×</button>
+    <div class="event-welcome-art" aria-hidden="true">
+      <span class="event-welcome-orbit event-welcome-orbit-one"></span><span class="event-welcome-orbit event-welcome-orbit-two"></span>
+      <img src="assets/covers/cover-1404.webp" alt="" width="340" height="480">
+      <span class="event-welcome-art-label">IRAN PROCESS REPORT · 1404</span>
+    </div>
+    <div class="event-welcome-copy-wrap">
+      <p class="event-welcome-kicker"><span></span> پنجمین دورهٔ گزارش فرایند ایران</p>
+      <h2 id="event-welcome-title">رونمایی گزارش ۱۴۰۴ نزدیک است</h2>
+      <p id="event-welcome-copy" class="event-welcome-copy">وضعیت بلوغ مدیریت فرایند در سازمان‌های ایرانی؛ پنج دوره پیمایش، یک تصویر روشن‌تر از مسیر پیش‌رو.</p>
+      <div class="event-welcome-date"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="5" width="17" height="16" rx="3"/><path d="M8 3v4m8-4v4M4 10h16"/></svg><span>زمان رونمایی</span><strong>۴ آبان ۱۴۰۵</strong></div>
+      <div class="event-welcome-actions"><a href="#story" data-nav="story" data-event-welcome-story>آشنایی با گزارش فرایند ایران <span aria-hidden="true">←</span></a><button type="button" data-event-welcome-close>بعداً می‌بینم</button></div>
+      <span class="event-welcome-edition">FIFTH EDITION <i></i> 1405</span>
+    </div>
+  </dialog>
   <div class="copy-toast" id="copy-toast" role="status" aria-live="polite"></div>
 
   <script src="assets/js/loader.js?v=20261005-19"></script>
@@ -156,12 +174,14 @@
   <script src="assets/js/annual-participants.js?v=20261005-19"></script>
   <script src="assets/js/annual-summary.js?v=20261012-1"></script>
   <script src="assets/js/annual-indicators.js?v=20261012-1"></script>
-  <script src="assets/js/content-refinements-20261012.js?v=3"></script>
+  <script src="assets/js/content-refinements-20261012.js?v=20261013-1"></script>
   <script>window.IPR_I18N.translate(document.body);</script>
   <script src="assets/js/downloads.js?v=20261012-2"></script>
   <script src="assets/js/booklets.js?v=20261005-19"></script>
   <script src="assets/js/booklet-reader.js?v=20261012-2"></script>
-  <script src="assets/js/app.js?v=20261012-8"></script>
+  <script src="assets/js/app.js?v=20261013-1"></script>
+  <script src="assets/js/event-gallery-20261013.js"></script>
+  <script src="assets/js/event-welcome-20261013.js"></script>
   <script src="assets/js/assistant-config.js?v=3"></script>
   <script src="assets/js/report-assistant-ui.js?v=3"></script>
   <script src="assets/js/assistant-engine.js?v=2"></script>

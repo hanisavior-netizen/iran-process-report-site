@@ -16,7 +16,15 @@
  ['تصاویر و شرح رویداد از بهفالب','Event photographs and details from BehfaLab'],
  ['رونمایی گزارش ۱۴۰۱ · ۱۸ مهر ۱۴۰۲','1401 report launch · 18 Mehr 1402'],
  ['رونمایی گزارش ۱۴۰۲ · ۱۵ مهر ۱۴۰۳ · سازمان ملی بهره‌وری','1402 report launch · 15 Mehr 1403 · National Productivity Organization'],
- ['رونمایی گزارش ۱۴۰۳ · ۶ آبان ۱۴۰۴ · هتل اسپیناس خلیج فارس','1403 report launch · 6 Aban 1404 · Espinas Persian Gulf Hotel']
+ ['رونمایی گزارش ۱۴۰۳ · ۶ آبان ۱۴۰۴ · هتل اسپیناس خلیج فارس','1403 report launch · 6 Aban 1404 · Espinas Persian Gulf Hotel'],
+ ['پنجمین دورهٔ گزارش فرایند ایران','The fifth Iran Process Report edition'],
+ ['رونمایی گزارش ۱۴۰۴ نزدیک است','The 1404 report launch is approaching'],
+ ['وضعیت بلوغ مدیریت فرایند در سازمان‌های ایرانی؛ پنج دوره پیمایش، یک تصویر روشن‌تر از مسیر پیش‌رو.','Process management maturity in Iranian organizations: five survey editions, a clearer view of the road ahead.'],
+ ['زمان رونمایی','Launch date'],
+ ['۴ آبان ۱۴۰۵','October 26, 2026'],
+ ['آشنایی با گزارش فرایند ایران','Discover the Iran Process Report'],
+ ['بعداً می‌بینم','Maybe later'],
+ ['پنجرهٔ معرفی رویداد','Event introduction']
  ];
  pairs.forEach(([fa,en])=>window.IPR_EN[I.norm(fa).key]=I.norm(en).key);
  C.hero.titleLine1=pairs[0][0];C.hero.titleLine2=pairs[1][0];C.hero.lead=pairs[2][0];
@@ -43,3 +51,7 @@
  document.querySelector('meta[property="og:title"]').content='گزارش فرایند ایران | وضعیت بلوغ مدیریت فرایند در سازمان‌های ایرانی';
  window.IPR_EN[I.norm('گزارش فرایند ایران | وضعیت بلوغ مدیریت فرایند در سازمان‌های ایرانی').key]='Iran Process Report | Process management maturity in Iranian organizations';
 })();
+
+// Source-specific event archive; original image watermarks are retained.
+window.IPR_CONTENT.eventPhotos['1402'].images = Array.from({length:6},(_,i)=>`assets/events/1402-irna-${i+1}.jpg`);
+window.IPR_CONTENT.eventPhotos['1402'].source = 'https://photo.irna.ir/photo/85619288/';
