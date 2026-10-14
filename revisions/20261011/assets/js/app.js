@@ -782,13 +782,23 @@
     const event=carousel && homeHeroSlide===0;
     const parts = event ? window.IPR_EVENT.hero(EN) : id === 'story' ? heroStory() : rep ? heroReport(rep) : sec ? heroChapter(sec) : heroHome();
     hero.classList.toggle('is-event-hero',event);
+    hero.classList.toggle('is-carousel',carousel);
     hero.classList.toggle('is-home', !sec && !rep && id !== 'story');
     hero.classList.toggle('is-chapter', !!sec || !!rep || id === 'story');
     hero.classList.toggle('is-report', !!rep);
-    document.getElementById('hero-copy').innerHTML = localize(parts.copy);
-    document.getElementById('hero-visual').innerHTML = localize(parts.visual);
-    document.getElementById('hero-rail').innerHTML = localize(parts.rail)+(carousel?window.IPR_EVENT.controls(EN,homeHeroSlide,homeHeroPaused):'');
-    document.getElementById('hero-visual').setAttribute('aria-hidden',String(!event));
+    if(carousel){
+      const launch=window.IPR_EVENT.hero(EN),research=heroHome();
+      const layer=(html,index,kind)=>`<div class="home-hero-layer home-${kind}${index===homeHeroSlide?' is-active':''}" data-home-layer="${index}" aria-hidden="${index!==homeHeroSlide}" ${index!==homeHeroSlide?'inert':''}>${html}</div>`;
+      document.getElementById('hero-copy').innerHTML=localize(layer(launch.copy,0,'event')+layer(research.copy,1,'research'));
+      document.getElementById('hero-visual').innerHTML=localize(layer(launch.visual,0,'event')+layer(research.visual+research.rail,1,'research'));
+      document.getElementById('hero-rail').innerHTML=window.IPR_EVENT.controls(EN,homeHeroSlide,homeHeroPaused);
+    }else{
+      document.getElementById('hero-copy').innerHTML = localize(parts.copy);
+      document.getElementById('hero-visual').innerHTML = localize(parts.visual);
+      document.getElementById('hero-rail').innerHTML = localize(parts.rail);
+    }
+    hero.setAttribute('aria-labelledby',event?'hero-event-title':'hero-title');
+    document.getElementById('hero-visual').setAttribute('aria-hidden',String(!carousel && !event));
     document.getElementById('hero-map').style.backgroundImage = C.hero.mapVector ? `url("${C.hero.mapVector}")` : '';
     hero.classList.remove('is-in'); void hero.offsetWidth; hero.classList.add('is-in');
     homeHeroElapsed=0;homeHeroLast=performance.now();
@@ -797,11 +807,16 @@
 
   function setHomeHero(slide) {
     if(!document.getElementById('hero').classList.contains('is-home')||window.IPR_RELEASE.isPublished())return;
-    homeHeroSlide=(slide+2)%2;renderHero('about');
+    homeHeroSlide=(slide+2)%2;
+    const hero=document.getElementById('hero');
+    hero.querySelectorAll('[data-home-layer]').forEach(layer=>{const active=Number(layer.dataset.homeLayer)===homeHeroSlide;layer.classList.toggle('is-active',active);layer.setAttribute('aria-hidden',String(!active));layer.inert=!active;});
+    hero.querySelectorAll('[data-home-slide]').forEach(button=>{const active=Number(button.dataset.homeSlide)===homeHeroSlide;button.classList.toggle('is-current',active);button.setAttribute('aria-current',String(active));});
+    hero.classList.toggle('is-event-hero',homeHeroSlide===0);hero.setAttribute('aria-labelledby',homeHeroSlide===0?'hero-event-title':'hero-title');
+    homeHeroElapsed=0;homeHeroLast=performance.now();hero.querySelector('.home-hero-controls')?.style.setProperty('--home-hero-progress',0);
   }
   document.addEventListener('click',event=>{
     const button=event.target.closest('[data-home-slide],[data-home-step],[data-home-pause]');if(!button)return;
-    if(button.hasAttribute('data-home-pause')){homeHeroPaused=!homeHeroPaused;renderHero('about');document.querySelector('[data-home-pause]')?.focus({preventScroll:true});}
+    if(button.hasAttribute('data-home-pause')){homeHeroPaused=!homeHeroPaused;document.querySelector('.home-hero-controls').outerHTML=window.IPR_EVENT.controls(EN,homeHeroSlide,homeHeroPaused);document.querySelector('[data-home-pause]')?.focus({preventScroll:true});}
     else {setHomeHero(button.hasAttribute('data-home-slide')?Number(button.dataset.homeSlide):homeHeroSlide+Number(button.dataset.homeStep));document.querySelector(`[data-home-slide="${homeHeroSlide}"]`)?.focus({preventScroll:true});}
   });
   document.getElementById('hero').addEventListener('keydown',event=>{
