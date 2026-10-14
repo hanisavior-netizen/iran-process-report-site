@@ -1,6 +1,6 @@
-/* 5 Aban 1405, 00:00 Asia/Tehran. End of 4 Aban. */
+/* Tuesday 5 Aban 1405, 07:30 Asia/Tehran (2026-10-27 04:00 UTC). */
 (() => {
-  const at = Date.parse('2026-10-27T00:00:00+03:30');
+  const at = Date.parse('2026-10-27T07:30:00+03:30');
   const release = window.IPR_RELEASE = {
     at,
     isPublished: (now = Date.now()) => now >= at,
