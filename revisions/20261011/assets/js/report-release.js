@@ -25,5 +25,6 @@
   }
   document.addEventListener('visibilitychange', () => { if (!document.hidden) update(); });
   document.addEventListener('ipr:site-ready', update);
+  document.addEventListener('ipr:hero-rendered', update);
   update();
 })();

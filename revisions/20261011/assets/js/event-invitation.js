@@ -14,6 +14,7 @@
  let opener,closeTimer,expiryTimer,overflowBefore;
  const close=(immediate=false)=>{if(!modal.open)return;try{sessionStorage.setItem(key,'seen');}catch{}clearTimeout(closeTimer);if(immediate||reduced.matches)modal.close();else{modal.classList.add('is-leaving');closeTimer=setTimeout(()=>modal.close(),240);}};
  modal.querySelector('.ew-close').addEventListener('click',()=>close());modal.querySelector('.ew-primary').addEventListener('click',()=>close(true));
+ document.addEventListener('ipr:report-release',()=>close(true));
  modal.addEventListener('cancel',e=>{e.preventDefault();close();});modal.addEventListener('close',()=>{clearTimeout(closeTimer);clearInterval(expiryTimer);document.documentElement.style.overflow=overflowBefore;modal.classList.remove('is-leaving');if(opener?.isConnected)opener.focus({preventScroll:true});});
  modal.addEventListener('click',e=>{if(e.target!==modal)return;const r=modal.getBoundingClientRect();if(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom)close();});
  const art=modal.querySelector('.ew-art');art.addEventListener('pointermove',e=>{if(e.pointerType!=='mouse'||reduced.matches)return;const r=art.getBoundingClientRect(),x=(e.clientX-r.left)/r.width-.5,y=(e.clientY-r.top)/r.height-.5;art.style.setProperty('--tilt-x',`${-y*5}deg`);art.style.setProperty('--tilt-y',`${x*7}deg`);art.style.setProperty('--shine-x',`${50+x*35}%`);});art.addEventListener('pointerleave',()=>{['--tilt-x','--tilt-y','--shine-x'].forEach(p=>art.style.removeProperty(p));});

@@ -693,8 +693,7 @@
 
   /* ---------- هیروی صفحه‌ی دفترچه ---------- */
   function launchPage() {
-    const labels=EN?['Days','Hours','Minutes']:['روز','ساعت','دقیقه'];
-    return `<section class="page report-page annual-page" id="report-1404"><div class="annual-wrap release-preview" id="annual-1404-summary"><section id="annual-1404-event"><p class="overline">${EN?'The fifth edition · Launch event':'دورهٔ پنجم · رویداد رونمایی'}</p><h2>${EN?'A new chapter in Iran Process Report':'فصلی تازه در گزارش فرایند ایران'}</h2><p class="release-lead">${EN?'The findings of the 1404 edition will be unveiled on 5 Aban 1405. Until then, discover the research and explore previous editions.':'یافته‌های گزارش ۱۴۰۴ در روز ۵ آبان ۱۴۰۵ رونمایی می‌شوند. تا آن زمان، با مسیر این پژوهش آشنا شوید و گزارش‌های دوره‌های گذشته را مرور کنید.'}</p><div class="release-date"><span>${EN?'Launch date':'زمان رونمایی'}</span><strong>${EN?'Tuesday, October 27, 2026 · 07:30':'سه‌شنبه ۵ آبان ۱۴۰۵ · ۰۷:۳۰'}</strong></div><div class="release-countdown" data-release-countdown aria-label="${EN?'Time until publication':'زمان باقی‌مانده تا انتشار'}">${labels.map(label=>`<div><b data-countdown-value>—</b><span>${label}</span></div>`).join('')}</div><p class="release-time">${EN?'Findings become visible at 07:30 on Tuesday, October 27, Tehran time.':'نتیجه‌های این دوره دقیقاً از ساعت ۰۷:۳۰ سه‌شنبه ۵ آبان، به وقت تهران، نمایش داده می‌شوند.'}</p><div class="release-actions"><a class="btn btn-wine" href="#story" data-nav="story">${EN?'Discover the research':'آشنایی با پژوهش'}</a><a class="btn btn-outline" href="#report-1403" data-nav="report-1403">${EN?'Explore the 1403 report':'مشاهدهٔ گزارش ۱۴۰۳'}</a></div></section></div>${annualPager('1404')}</section>`;
+    return window.IPR_EVENT.page(EN,annualPager('1404'));
   }
   function heroReport(y) {
     if(y==='1404' && !window.IPR_RELEASE.isPublished()) return {
@@ -773,20 +772,53 @@
       </div>${annualPager(y)}</section>`;
   }
 
+  let homeHeroSlide=0, homeHeroPaused=matchMedia('(prefers-reduced-motion: reduce)').matches, homeHeroElapsed=0, homeHeroLast=performance.now();
   function renderHero(id) {
     const hero = document.getElementById('hero');
     const rep = /^report-\d{4}$/.test(id) ? id.slice(7) : null;
     const sec = SECTIONS.find((s) => s.id === id);
-    const parts = id === 'story' ? heroStory() : rep ? heroReport(rep) : sec ? heroChapter(sec) : heroHome();
+    const home=!sec && !rep && id !== 'story';
+    const carousel=home && !window.IPR_RELEASE.isPublished();
+    const event=carousel && homeHeroSlide===0;
+    const parts = event ? window.IPR_EVENT.hero(EN) : id === 'story' ? heroStory() : rep ? heroReport(rep) : sec ? heroChapter(sec) : heroHome();
+    hero.classList.toggle('is-event-hero',event);
     hero.classList.toggle('is-home', !sec && !rep && id !== 'story');
     hero.classList.toggle('is-chapter', !!sec || !!rep || id === 'story');
     hero.classList.toggle('is-report', !!rep);
     document.getElementById('hero-copy').innerHTML = localize(parts.copy);
     document.getElementById('hero-visual').innerHTML = localize(parts.visual);
-    document.getElementById('hero-rail').innerHTML = localize(parts.rail);
+    document.getElementById('hero-rail').innerHTML = localize(parts.rail)+(carousel?window.IPR_EVENT.controls(EN,homeHeroSlide,homeHeroPaused):'');
+    document.getElementById('hero-visual').setAttribute('aria-hidden',String(!event));
     document.getElementById('hero-map').style.backgroundImage = C.hero.mapVector ? `url("${C.hero.mapVector}")` : '';
     hero.classList.remove('is-in'); void hero.offsetWidth; hero.classList.add('is-in');
+    homeHeroElapsed=0;homeHeroLast=performance.now();
+    document.dispatchEvent(new CustomEvent('ipr:hero-rendered'));
   }
+
+  function setHomeHero(slide) {
+    if(!document.getElementById('hero').classList.contains('is-home')||window.IPR_RELEASE.isPublished())return;
+    homeHeroSlide=(slide+2)%2;renderHero('about');
+  }
+  document.addEventListener('click',event=>{
+    const button=event.target.closest('[data-home-slide],[data-home-step],[data-home-pause]');if(!button)return;
+    if(button.hasAttribute('data-home-pause')){homeHeroPaused=!homeHeroPaused;renderHero('about');document.querySelector('[data-home-pause]')?.focus({preventScroll:true});}
+    else {setHomeHero(button.hasAttribute('data-home-slide')?Number(button.dataset.homeSlide):homeHeroSlide+Number(button.dataset.homeStep));document.querySelector(`[data-home-slide="${homeHeroSlide}"]`)?.focus({preventScroll:true});}
+  });
+  document.getElementById('hero').addEventListener('keydown',event=>{
+    if(!event.target.closest('.home-hero-controls')||!['ArrowLeft','ArrowRight'].includes(event.key))return;
+    event.preventDefault();setHomeHero(homeHeroSlide+(event.key==='ArrowRight'?1:-1));document.querySelector(`[data-home-slide="${homeHeroSlide}"]`)?.focus({preventScroll:true});
+  });
+  let homeSwipe;
+  document.getElementById('hero').addEventListener('pointerdown',event=>{if(event.pointerType==='touch'&&!event.target.closest('a,button'))homeSwipe={x:event.clientX,y:event.clientY};});
+  document.getElementById('hero').addEventListener('pointerup',event=>{if(!homeSwipe)return;const dx=event.clientX-homeSwipe.x,dy=event.clientY-homeSwipe.y;homeSwipe=null;if(Math.abs(dx)>60&&Math.abs(dx)>Math.abs(dy)*1.4)setHomeHero(homeHeroSlide+(dx<0?1:-1));});
+  document.getElementById('hero').addEventListener('pointercancel',()=>homeSwipe=null);
+  setInterval(()=>{
+    const now=performance.now(),delta=now-homeHeroLast;homeHeroLast=now;
+    const hero=document.getElementById('hero'),controls=hero.querySelector('.home-hero-controls');
+    if(!controls||document.hidden||homeHeroPaused||document.querySelector('dialog[open]')||hero.getBoundingClientRect().bottom<0||hero.matches(':hover')&&matchMedia('(hover:hover)').matches||hero.contains(document.activeElement)&&document.activeElement.matches(':focus-visible'))return;
+    homeHeroElapsed+=delta;controls.style.setProperty('--home-hero-progress',Math.min(1,homeHeroElapsed/9000));
+    if(homeHeroElapsed>=9000)setHomeHero(homeHeroSlide+1);
+  },150);
 
 
   /* ---------- مشخصات پاسخ‌دهندگان ---------- */
@@ -1186,6 +1218,7 @@
     current.outerHTML=localize(editionPage('1404'));
     document.getElementById('report-1404').hidden=!visible;
     if(visible) renderHero('report-1404');
+    else if(document.getElementById('hero').classList.contains('is-home'))renderHero('about');
   });
   window.addEventListener('hashchange', () => routeFromHash(true));
   const mast = document.querySelector('.masthead');
