@@ -783,6 +783,10 @@
     const parts = event ? window.IPR_EVENT.hero(EN) : id === 'story' ? heroStory() : rep ? heroReport(rep) : sec ? heroChapter(sec) : heroHome();
     hero.classList.toggle('is-event-hero',event);
     hero.classList.toggle('is-carousel',carousel);
+    if(carousel && !hero.querySelector('.hero-atmosphere')){
+      const atmosphere=document.createElement('div');atmosphere.className='hero-atmosphere';atmosphere.setAttribute('aria-hidden','true');
+      atmosphere.innerHTML=window.IPR_EVENT.flow()+`<span>${EN?'1404':'۱۴۰۴'}</span>`;hero.prepend(atmosphere);
+    }else if(!carousel)hero.querySelector('.hero-atmosphere')?.remove();
     hero.classList.toggle('is-home', !sec && !rep && id !== 'story');
     hero.classList.toggle('is-chapter', !!sec || !!rep || id === 'story');
     hero.classList.toggle('is-report', !!rep);
