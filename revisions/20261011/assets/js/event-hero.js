@@ -1,8 +1,8 @@
 (() => {
   const E=window.IPR_EVENT;
   E.speakers=[
-    {image:'javad-azari.webp',name:['محمدجواد آذری جهرمی','Mohammad Javad Azari Jahromi'],role:['وزیر اسبق ارتباطات و فناوری اطلاعات','Former Minister of ICT']},
     {image:'jafar-kabiri.webp',name:['محمدجعفر کبیری','Mohammad Jafar Kabiri'],role:['مدیرعامل سازمان منطقه آزاد کیش','CEO, Kish Free Zone Organization']},
+    {image:'javad-azari.webp',name:['محمدجواد آذری جهرمی','Mohammad Javad Azari Jahromi'],role:['وزیر اسبق ارتباطات و فناوری اطلاعات','Former Minister of ICT']},
     {image:'mehrdad-kermani.webp',name:['مهرداد کرمانی','Mehrdad Kermani'],role:['مدیرعامل شرکت بهفا','CEO, Behfa']}
   ];
   E.flow=()=>`<svg class="event-flow" viewBox="0 0 1000 620" fill="none" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><path d="M-80 420C130 120 300 730 580 420S870 80 1090 240"/><path d="M-80 445C130 145 300 755 580 445S870 105 1090 265"/><path d="M-80 470C130 170 300 780 580 470S870 130 1090 290"/><path class="event-flow-light" d="M-80 445C130 145 300 755 580 445S870 105 1090 265"/></svg>`;
@@ -12,5 +12,5 @@
     visual:`<div class="event-book-feature">${E.flow()}<div class="event-book-glow" aria-hidden="true"></div><a class="event-book-cover" href="#report-1404" data-nav="report-1404" aria-label="${en?'Discover Iran Process Report 1404':'معرفی گزارش فرایند ایران ۱۴۰۴'}"><img src="assets/covers/cover-1404${en?'-en.svg':'.webp'}" alt="${en?'Cover of Iran Process Report 1404':'جلد گزارش فرایند ایران ۱۴۰۴'}" width="340" height="480"></a><div class="event-hero-guests"><div>${E.speakers.map(s=>`<figure><img src="assets/event-1404/${s.image}" alt="${s.name[en?1:0]}" width="64" height="64"><figcaption>${s.name[en?1:0]}</figcaption></figure>`).join('')}</div></div></div>`,
     rail:''
   });
-  E.controls=(en,active,paused)=>`<div class="home-hero-controls" role="group" aria-label="${en?'Home hero slides':'نماهای هیروی صفحهٔ اصلی'}">${(en?['Launch event','The research']:['رویداد رونمایی','پژوهش گزارش']).map((label,i)=>`<button type="button" data-home-slide="${i}" class="hero-dot${i===active?' is-current':''}" aria-label="${label}" aria-current="${i===active}"><i aria-hidden="true"></i></button>`).join('')}<button type="button" data-home-pause aria-label="${paused?(en?'Resume automatic slides':'ادامهٔ نمایش خودکار'):(en?'Pause automatic slides':'توقف نمایش خودکار')}" aria-pressed="${paused}"><svg viewBox="0 0 16 16" aria-hidden="true">${paused?'<path d="m5 3 7 5-7 5Z"/>':'<path d="M5 3v10M11 3v10"/>'}</svg></button></div>`;
+  E.controls=(en,active,paused)=>`<div class="home-hero-controls" role="group" aria-label="${en?'Home hero slides':'نماهای هیروی صفحهٔ اصلی'}">${(en?['Launch event','Annual report']:['رویداد رونمایی','گزارش سالانه']).map((label,i)=>`<button type="button" data-home-slide="${i}" class="hero-dot${i===active?' is-current':''}" aria-label="${label}" aria-current="${i===active}"><i aria-hidden="true"></i></button>`).join('')}<button type="button" data-home-pause aria-label="${paused?(en?'Resume automatic slides':'ادامهٔ نمایش خودکار'):(en?'Pause automatic slides':'توقف نمایش خودکار')}" aria-pressed="${paused}"><svg viewBox="0 0 16 16" aria-hidden="true">${paused?'<path d="m5 3 7 5-7 5Z"/>':'<path d="M5 3v10M11 3v10"/>'}</svg></button></div>`;
 })();

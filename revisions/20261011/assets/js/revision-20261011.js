@@ -13,7 +13,7 @@
   Object.entries(window.IPR_EN).forEach(([key, value]) => { window.IPR_EN[fullName(key)] = value; });
   const pairs = [
     ['گزارش فرایند ایران چیست؟', 'What is the Iran Process Report?'],
-    ['گزارش فرایند ایران یک پژوهش سالانه دربارهٔ وضعیت مدیریت فرایند در سازمان‌های ایرانی است؛ تصویری از تجربهٔ مدیران و کارشناسان در پنج محور اصلی.', 'The Iran Process Report is an annual study of process management in Iranian organizations, drawing on managers’ and specialists’ experience across five core topics.'],
+    ['گزارش فرایند ایران، گزارشی سالانه دربارهٔ وضعیت مدیریت فرایند در سازمان‌های ایرانی است؛ تصویری از تجربهٔ مدیران و کارشناسان در پنج محور اصلی.', 'The Iran Process Report documents process management in Iranian organizations through managers’ and specialists’ experience across five core topics.'],
     ['گزارش‌هایی مانند «وضعیت مدیریت فرایند» BPTrends، تجربهٔ سازمان‌ها را در سطح جهان بررسی می‌کنند. گزارش فرایند ایران از سال ۱۴۰۰ برای پرکردن خلأ داده‌های بومی و ایجاد یک تصویر سالانه از مدیریت فرایند در سازمان‌های ایرانی شکل گرفته است.', 'International studies such as BPTrends’ State of Business Process Management examine organizations’ experience worldwide. Since 1400, the Iran Process Report has addressed the need for local data by building an annual picture of process management in Iranian organizations.'],
     ['تعهد و علاقه‌مندی سازمانی: میزان توجه سازمان به مدیریت فرایند و حمایت مدیران ارشد از استقرار و توسعهٔ آن را بررسی می‌کند.', 'Organizational commitment and interest: examines attention to process management and senior managers’ support for its implementation and development.'],
     ['سرمایه‌گذاری: بودجه، آموزش و نیروی انسانی اختصاص‌یافته به مدیریت فرایند و انتظار پاسخ‌دهندگان از سرمایه‌گذاری آینده را دنبال می‌کند.', 'Investment: follows spending, training and staff allocated to process management, as well as respondents’ expectations of future investment.'],
@@ -31,7 +31,7 @@
     ['وضعیت مدیریت فرایند در سازمان‌های ایرانی', 'The state of process management in Iranian organizations'],
     ['گزارش فرایند ایران | وضعیت مدیریت فرایند در سازمان‌های ایرانی', 'Iran Process Report | The state of process management in Iranian organizations'],
     ['برای خواندن جزئیات و سنجیدن نتیجه‌ها، دفترچهٔ همان دوره و نمودارهای پرسش‌به‌پرسش را کنار هم ببینید.', 'To explore the details and assess the findings, compare each edition’s booklet with its question-level charts.'],
-    ['در دورهٔ پنجم، ۵۱۱ نفر از ۳۹۹ سازمان شناسایی‌شده، ۵۱۲ پرسشنامهٔ ۱۴۰۴ را تکمیل کرده‌اند. نتیجه‌های آن در محورهای پژوهش کنار سال‌های قبل دیده می‌شوند.', 'In the fifth edition, 511 identified respondents from 399 identifiable organizations completed 512 questionnaires. Their results appear alongside previous years in the research topics.'],
+    ['در دورهٔ پنجم، ۵۱۱ نفر از ۳۹۹ سازمان شناسایی‌شده، ۵۱۲ پرسشنامهٔ ۱۴۰۴ را تکمیل کرده‌اند. نتیجه‌های آن در محورهای گزارش کنار سال‌های قبل دیده می‌شوند.', 'In the fifth edition, 511 identified respondents from 399 identifiable organizations completed 512 questionnaires. Their results appear alongside previous years in the report topics.'],
     ['دفترچهٔ ۱۴۰۴ هنوز رونمایی نشده است. شمار افراد از تطبیق نام و شماره‌تماس و شمار سازمان‌ها از یکسان‌سازی نام‌های ثبت‌شده به دست آمده است.', 'The 1404 booklet has not yet been released. Respondents were counted by matching names and phone numbers, and organizations by reconciling recorded names.']
   ];
   pairs.forEach(([fa, en]) => window.IPR_EN[I.norm(fa).key] = I.norm(en).key);
