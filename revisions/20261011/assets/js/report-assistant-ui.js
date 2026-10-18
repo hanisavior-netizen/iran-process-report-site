@@ -33,17 +33,24 @@
   input.addEventListener('input',update);
   panel.addEventListener('keydown',event=>{if(event.key==='Escape'){event.stopPropagation();close();}});
   root.querySelector('form').addEventListener('submit',event=>event.preventDefault());
-  // Keep the launcher clear of the footer action in either reading direction.
+  // Keep the launcher clear of the footer action and the fixed event registration bar.
   let frame;
   const avoidFooter=()=>{cancelAnimationFrame(frame);frame=requestAnimationFrame(()=>{
     const base=innerWidth<=600?12:22, target=document.querySelector('[data-top]');
     if(!target)return;
     const r=target.getBoundingClientRect(),b=launcher.getBoundingClientRect();
     const horizontal=r.left<b.right+12&&r.right>b.left-12;
-    const lift=horizontal&&r.top<innerHeight&&r.bottom>0?Math.max(base,innerHeight-r.top+14):base;
+    let lift=horizontal&&r.top<innerHeight&&r.bottom>0?Math.max(base,innerHeight-r.top+14):base;
+    const registration=document.querySelector('.li-registration-portal.is-visible');
+    if(registration){
+      const bar=registration.getBoundingClientRect();
+      if(bar.top<innerHeight&&bar.bottom>0)lift=Math.max(lift,innerHeight-bar.top+14);
+    }
     root.style.setProperty('--assistant-lift',lift+'px');
   });};
   window.addEventListener('scroll',avoidFooter,{passive:true});window.addEventListener('resize',avoidFooter);
-  new ResizeObserver(avoidFooter).observe(document.querySelector('footer'));avoidFooter();
+  new ResizeObserver(avoidFooter).observe(document.querySelector('footer'));
+  new MutationObserver(avoidFooter).observe(document.body,{childList:true,subtree:true,attributes:true,attributeFilter:['class']});
+  avoidFooter();
   update();
 })();
