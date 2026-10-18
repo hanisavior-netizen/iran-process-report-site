@@ -1192,6 +1192,8 @@
   document.addEventListener('click', (e) => {
     const trigger = e.target.closest('.nav-trigger');
     if (trigger) { const group = trigger.closest('.nav-group'), wasOpen = group.classList.contains('open'); document.querySelectorAll('.nav-group.open').forEach((el) => { el.classList.remove('open'); el.querySelector('.nav-trigger')?.setAttribute('aria-expanded', 'false'); }); group.classList.toggle('open', !wasOpen); trigger.setAttribute('aria-expanded', String(!wasOpen)); return; }
+    const selectedNavLink = e.target.closest('.section-nav a');
+    if (selectedNavLink && selectedNavLink.target !== '_blank' && !e.ctrlKey && !e.metaKey && !e.shiftKey && !e.altKey) setTimeout(closeMenu, 0);
     const nav = e.target.closest('[data-nav]');
     if (nav) { if (nav.target === '_blank' || e.ctrlKey || e.metaKey || e.shiftKey || e.altKey) return; e.preventDefault(); show(nav.dataset.nav, true, nav.dataset.target); closeMenu(); return; }
     if (!e.target.closest('.section-nav, .menu-button')) closeMenu();
