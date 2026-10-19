@@ -10,19 +10,21 @@ import re
 def patch(path):
     source = path.read_text(encoding='utf-8')
     marker = '# Independent public document routes.'
-    if marker in source:
-        return
     anchor = "        if not path.startswith(('assets/','data/')): return False"
     if source.count(anchor) != 1:
         raise RuntimeError('Unrecognized public_path implementation; preserve the active backend')
     addition = '''        # Independent public document routes.
-        page_route = re.fullmatch(r'(?:about|reports|topics|reports/140[0-4]|topics/(?:commitment|investment|tools|ai|mining|maturity))(?:/index\\.html)?', path)
+        page_route = re.fullmatch(r'(?:(?:fa|en)(?:/(?:about|reports|topics|reports/140[0-4]|topics/(?:commitment|investment|tools|ai|mining|maturity)))?|about|reports|topics|reports/140[0-4]|topics/(?:commitment|investment|tools|ai|mining|maturity))(?:/index\\.html)?', path)
         if page_route:
             file = (PUBLIC / path).resolve()
             if file.is_dir(): file = file / 'index.html'
             return file.is_relative_to(PUBLIC.resolve()) and file.is_file()
 '''
-    source = source.replace(anchor, addition + anchor)
+    if marker in source:
+        expected = next(line for line in addition.splitlines() if 'page_route = re.fullmatch' in line)
+        source = re.sub(r'        page_route = re.fullmatch[^\n]*', lambda _: expected, source)
+    else:
+        source = source.replace(anchor, addition + anchor)
     compile(source, str(path), 'exec')
     path.write_text(source, encoding='utf-8')
     print('PUBLIC_PAGE_ROUTES_ENABLED')

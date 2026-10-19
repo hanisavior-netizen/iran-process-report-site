@@ -7,6 +7,8 @@
   topics.forEach(id => paths[id] = `topics/${id}/`);
   for (let year=1400; year<=1404; year++) paths[`report-${year}`] = `reports/${year}/`;
   const page = document.querySelector('meta[name="ipr-page"]')?.content || 'about';
+  const requestedLanguage = new URLSearchParams(location.search).get('lang');
+  const lang = ['fa','en'].includes(requestedLanguage) ? requestedLanguage : document.querySelector('meta[name="ipr-language"]')?.content || 'fa';
   const fromHash = value => {
     const hash = value.replace(/^#/, '');
     if (Object.hasOwn(paths, hash)) return {page:hash};
@@ -21,9 +23,10 @@
     if (['profile','about-intro','find-title'].includes(hash)) return {page:'about',target:hash};
     return null;
   };
-  const url = (id, target, search=location.search) => {
-    const result = new URL(paths[id] ?? '', base);
+  const url = (id, target, search=location.search, language=lang) => {
+    const result = new URL(`${language==='en'?'en':'fa'}/${paths[id] ?? ''}`, base);
     result.search = search;
+    result.searchParams.delete('lang');
     if (target && target !== id) result.hash = target;
     return result.href;
   };
@@ -37,26 +40,34 @@
       const raw = anchor.getAttribute('href');
       if (!raw || /^(?:mailto:|tel:|javascript:)/i.test(raw)) return;
       const parsed = new URL(raw, document.baseURI);
-      if (parsed.origin !== location.origin || !parsed.hash) return;
-      if (![base.pathname, location.pathname].includes(parsed.pathname)) return;
+      if (parsed.origin !== location.origin) return;
+      if (raw.startsWith('#')) {
+        const legacy = fromHash(decodeURIComponent(parsed.hash));
+        anchor.href = legacy ? url(legacy.page,legacy.target) : location.pathname + location.search + raw;
+        return;
+      }
+      if (!parsed.pathname.startsWith(base.pathname)) return;
+      const relative = parsed.pathname.slice(base.pathname.length).replace(/^(?:fa|en)\//,'');
+      const route = Object.entries(paths).find(([,path]) => path === relative);
+      if (!route) return;
       const legacy = fromHash(decodeURIComponent(parsed.hash));
-      if (legacy) anchor.href = url(legacy.page, legacy.target, parsed.search || location.search);
-      else if (raw.startsWith('#')) anchor.href = location.pathname + location.search + raw;
+      anchor.href = url(legacy?.page || route[0],legacy?.target || (!legacy?parsed.hash.slice(1):undefined),parsed.search || location.search);
     });
   };
-  window.IPR_ROUTES = {base, paths, page, fromHash, url, rewrite};
+  window.IPR_ROUTES = {base, paths, page, lang, fromHash, url, rewrite};
   const legacy = fromHash(decodeURIComponent(location.hash));
-  if (legacy) {
-    const destination = new URL(url(legacy.page, legacy.target));
-    if (destination.pathname !== location.pathname) location.replace(destination.href);
-    else if (destination.href !== location.href) history.replaceState(null,'',destination.href);
-  }
+  const destination = new URL(url(legacy?.page || page, legacy?.target || (!legacy?location.hash.slice(1):undefined)));
+  if (destination.pathname !== location.pathname) location.replace(destination.href);
+  else if (destination.href !== location.href) history.replaceState(null,'',destination.href);
   // Late-created navigation includes gallery, reader, and assistant source links.
   const observer = new MutationObserver(records => records.forEach(record => record.addedNodes.forEach(node => {
     if (node.nodeType === 1) rewrite(node);
   })));
   observer.observe(document.documentElement,{subtree:true,childList:true});
   document.addEventListener('DOMContentLoaded', () => rewrite(document), {once:true});
-  const canonical = document.createElement('link'); canonical.rel='canonical'; canonical.href=url(page,undefined,new URLSearchParams(location.search).get('lang')==='en'?'?lang=en':'');
+  const canonical = document.createElement('link'); canonical.rel='canonical'; canonical.href=url(page,undefined,'');
   document.head.append(canonical);
+  ['fa','en','x-default'].forEach(language => {
+    const alternate=document.createElement('link'); alternate.rel='alternate'; alternate.hreflang=language; alternate.href=url(page,undefined,'',language==='en'?'en':'fa'); document.head.append(alternate);
+  });
 })();

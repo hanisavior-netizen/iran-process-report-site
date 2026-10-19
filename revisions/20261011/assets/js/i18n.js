@@ -1,7 +1,7 @@
 /* One content tree, localized synchronously before each render. */
 (() => {
   'use strict';
-  const lang = new URLSearchParams(location.search).get('lang') === 'en' ? 'en' : 'fa';
+  const lang = window.IPR_ROUTES?.lang || (new URLSearchParams(location.search).get('lang') === 'en' ? 'en' : 'fa');
   const root = document.documentElement;
   root.lang = lang; root.dir = lang === 'en' ? 'ltr' : 'rtl'; root.dataset.lang = lang;
   const persian = /[\u0600-\u06ff]/;
@@ -40,7 +40,11 @@
     return value.replace(/\b140[0-5]\b/g,year=>yearMap[year]);
   };
   api.calendarize=calendarize;
-  api.setLang = lang => {const u=new URL(location.href);u.searchParams.set('lang',lang==='en'?'en':'fa');location.href=u.href;};
+  api.setLang = lang => {
+    const routes=window.IPR_ROUTES;
+    if(routes) {location.assign(routes.url(routes.page,location.hash.slice(1),location.search,lang));return;}
+    const u=new URL(location.href);u.searchParams.set('lang',lang==='en'?'en':'fa');location.href=u.href;
+  };
   api.t = input => {
     if(lang==='fa' || typeof input!=='string') return input;
     if(!persian.test(input)) return input;

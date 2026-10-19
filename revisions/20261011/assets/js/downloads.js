@@ -4,7 +4,7 @@
   if (location.hostname.endsWith('.github.io')) {
   const liveDownload = () => {
     const lang = window.IPR_I18N?.lang === 'en' ? 'en' : 'fa';
-    window.location.assign(`https://irprocessreport.ir/?lang=${lang}#about`);
+    window.location.assign(`https://irprocessreport.ir/${lang}/`);
   };
   window.IPR_DOWNLOADS = {requireAccess: liveDownload};
   document.addEventListener('click', event => {
