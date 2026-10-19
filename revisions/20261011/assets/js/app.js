@@ -1070,34 +1070,34 @@
     </section>`;
   }
 
-  /* ---------- مسیریابی تب‌ها ---------- */
+  /* Each route is a separate document; anchors only identify positions within it. */
   function show(id, scrollTop = true, target) {
-    const pages = [...document.querySelectorAll('#view .page')];
-    const page = pages.find((p) => p.id === id) || pages[0];
+    const R = window.IPR_ROUTES;
+    if (id !== R.page) { location.assign(R.url(id, target)); return; }
+    const page = document.querySelector('#view .page');
     if (!page) return;
-    pages.forEach((p) => { p.hidden = p !== page; });
-    const topPage = SECTIONS.some((s) => s.id === page.id) ? 'data' : /^report-/.test(page.id) ? 'reports' : page.id;
-    document.querySelectorAll('.section-nav a, .footer-nav a').forEach((a) => { const on = a.dataset.nav === page.id || (a.closest('.section-nav') && a.dataset.nav === topPage); a.classList.toggle('active', on); if (a.closest('.section-nav')) a.setAttribute('aria-current', on ? 'page' : 'false'); });
-    document.querySelectorAll('.nav-group').forEach((group) => group.querySelector('.nav-trigger')?.classList.toggle('active', group.dataset.menu === topPage));
-    const isLanding = ['data', 'reports'].includes(page.id);
+    const topPage = SECTIONS.some(s => s.id === id) ? 'data' : /^report-/.test(id) ? 'reports' : id;
+    document.querySelectorAll('.section-nav a, .footer-nav a').forEach(a => {
+      const on = a.dataset.nav === id || (a.closest('.section-nav') && a.dataset.nav === topPage);
+      a.classList.toggle('active', on);
+      if (a.closest('.section-nav')) a.setAttribute('aria-current', on ? 'page' : 'false');
+    });
+    document.querySelectorAll('.nav-group').forEach(group => group.querySelector('.nav-trigger')?.classList.toggle('active', group.dataset.menu === topPage));
+    const isLanding = ['data', 'reports'].includes(id);
     document.getElementById('hero').hidden = isLanding;
-    if (!isLanding) renderHero(page.id);
-    if (location.hash.slice(1) !== (target || page.id)) { try { history.replaceState(null, '', `#${target || page.id}`); } catch { /* محیط‌های محدود */ } }
-    document.title = t(page.id === 'story' ? 'دربارهٔ گزارش فرایند ایران | گزارش فرایند ایران' : /^report-/.test(page.id) ? `گزارش ${fa(page.id.slice(7))} | گزارش فرایند ایران` : ({about:'گزارش فرایند ایران',data:'محورهای گزارش',reports:'گزارش‌ها و رونمایی‌ها | گزارش فرایند ایران'}[page.id] || `${C.chapters[page.id]?.title || ''} | گزارش فرایند ایران`));
-    if (target) requestAnimationFrame(() => document.getElementById(target)?.scrollIntoView({ behavior: 'smooth', block: 'start' }));
+    if (!isLanding) renderHero(id);
+    const title = t(id === 'story' ? 'دربارهٔ گزارش فرایند ایران | گزارش فرایند ایران' : /^report-/.test(id) ? `گزارش ${fa(id.slice(7))} | گزارش فرایند ایران` : ({about:'گزارش فرایند ایران',data:'محورهای گزارش',reports:'گزارش‌ها و رونمایی‌ها | گزارش فرایند ایران'}[id] || `${C.chapters[id]?.title || ''} | گزارش فرایند ایران`));
+    document.title = window.IPR_I18N.calendarize(window.IPR_I18N.digits(title));
+    R.rewrite(document);
+    if (target) requestAnimationFrame(() => document.getElementById(target)?.scrollIntoView({ behavior: 'instant', block: 'start' }));
     else if (scrollTop) window.scrollTo({ top: 0, behavior: 'instant' });
   }
 
   function routeFromHash(scrollTop) {
-    const h = location.hash.slice(1);
-    if (h.startsWith('q-q-')) { const q = QUESTIONS.find((x) => `q-${x.id}` === h); if (q) return show(q.section, false, h); }
-    if (['story-project', 'story-method', 'story-facts'].includes(h)) return show('story', false, h);
-    if (h === 'events') return show('reports', scrollTop);
-    const oldEvent = /^event-(\d{4})$/.exec(h);
-    if (oldEvent) return show(`report-${oldEvent[1]}`, scrollTop, `annual-${oldEvent[1]}-event`);
-    const yearEvent = /^annual-(\d{4})-event$/.exec(h);
-    if (yearEvent) return show(`report-${yearEvent[1]}`, scrollTop, h);
-    show(SECTIONS.some((s) => s.id === h) || ['data', 'reports', 'story'].includes(h) || /^report-\d{4}$/.test(h) ? h : 'about', scrollTop);
+    const R = window.IPR_ROUTES, h = decodeURIComponent(location.hash.slice(1));
+    const legacy = R.fromHash(h);
+    if (legacy && legacy.page !== R.page) { location.replace(R.url(legacy.page, legacy.target)); return; }
+    show(R.page, scrollTop, legacy?.target || (h && h !== R.page ? h : undefined));
   }
 
   function buildSiteNav() {
@@ -1169,20 +1169,28 @@
   }
 
   async function init() {
-    renderHero('about');                                   // هیرو حتی اگر داده دیر برسد نمایش داده می‌شود
     const data = await loadData();
     SECTIONS = data.sections; QUESTIONS = data.questions; YEARS = data.meta.years;
     buildSiteNav();
-    document.getElementById('view').innerHTML = localize(homeView() + dataView() + reportsView() + SECTIONS.map((s, i) => chapterView(s, i)).join('') + storyView() + C.editions.map((e) => editionPage(e.year)).join(''));
-    document.dispatchEvent(new CustomEvent('ipr:site-ready'));
-    mountCards(document.getElementById('view'));
-    setupCarousels();
-    if (performance.getEntriesByType('navigation')[0]?.type === 'reload') history.replaceState(null, '', location.pathname + location.search);
+    const id = window.IPR_ROUTES.page;
+    let html;
+    if (id === 'about') html = homeView();
+    else if (id === 'data') html = dataView();
+    else if (id === 'reports') html = reportsView();
+    else if (id === 'story') html = storyView();
+    else if (/^report-/.test(id)) html = editionPage(id.slice(7));
+    else {
+      const index = SECTIONS.findIndex(section => section.id === id);
+      if (index < 0) throw new Error('Unknown page');
+      html = chapterView(SECTIONS[index], index);
+    }
+    document.getElementById('view').innerHTML = localize(html);
     routeFromHash(true);
-    // مرورگر بعد از بارگذاری به لنگر #about/#commitment… می‌پرد؛ صفحه باید از بالا شروع شود
-    const h = location.hash.slice(1);
-    if (/^annual-\d{4}-event$/.test(h)) window.addEventListener('load', () => requestAnimationFrame(() => document.getElementById(h)?.scrollIntoView({ behavior: 'instant', block: 'start' })), { once: true });
-    else if (!h.startsWith('q-q-')) window.addEventListener('load', () => requestAnimationFrame(() => window.scrollTo({ top: 0, behavior: 'instant' })), { once: true });
+    mountCards(document.getElementById('view'));
+    if (id === 'about') setupCarousels();
+    document.dispatchEvent(new CustomEvent('ipr:site-ready'));
+    // Restore an in-page target after layout without discarding the page URL.
+    if (location.hash) window.addEventListener('load', () => routeFromHash(false), { once: true });
   }
 
   /* ---------- رویدادها ---------- */
@@ -1196,10 +1204,10 @@
     const selectedNavLink = e.target.closest('.section-nav a');
     if (selectedNavLink && selectedNavLink.target !== '_blank' && !e.ctrlKey && !e.metaKey && !e.shiftKey && !e.altKey) setTimeout(closeMenu, 0);
     const nav = e.target.closest('[data-nav]');
-    if (nav) { if (nav.target === '_blank' || e.ctrlKey || e.metaKey || e.shiftKey || e.altKey) return; e.preventDefault(); show(nav.dataset.nav, true, nav.dataset.target); closeMenu(); return; }
+    if (nav) { window.IPR_ROUTES.rewrite(nav); closeMenu(); return; }
     if (!e.target.closest('.section-nav, .menu-button')) closeMenu();
     const sc = e.target.closest('[data-scroll]');
-    if (sc) { e.preventDefault(); document.querySelector(sc.getAttribute('href'))?.scrollIntoView({ behavior: 'smooth', block: 'start' }); return; }
+    if (sc) { e.preventDefault(); document.getElementById(new URL(sc.href, document.baseURI).hash.slice(1))?.scrollIntoView({ behavior: 'smooth', block: 'start' }); return; }
     if (e.target.closest('[data-top]')) { e.preventDefault(); window.scrollTo({ top: 0, behavior: 'smooth' }); return; }
   });
   document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeMenu(); });
@@ -1235,7 +1243,10 @@
 
   document.addEventListener('ipr:report-release', () => {
     const current=document.getElementById('report-1404');
-    if(!current) return;
+    if(!current) {
+      if(window.IPR_ROUTES.page==='about') renderHero('about');
+      return;
+    }
     const visible=!current.hidden;
     current.outerHTML=localize(editionPage('1404'));
     document.getElementById('report-1404').hidden=!visible;
