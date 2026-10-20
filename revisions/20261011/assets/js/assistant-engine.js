@@ -35,7 +35,8 @@
   const history=records.filter(r=>!r.error&&!r.pending).slice(-6).map(r=>({role:r.role,content:r.content.replace(/\[S\d+\]/g,'').slice(0,1200)}));records.push({role:'user',content:question});const answer={role:'assistant',content:'',sources:[],pending:true,question};records.push(answer);input.value='';input.dispatchEvent(new Event('input'));feedback.textContent='';busy=true;controller=new AbortController();render();update();
   const event=(kind,data)=>{if(kind==='sources')answer.sources=sources(data.sources);if(kind==='delta'){answer.content+=data.text||'';answer.pending=false;}if(kind==='error'){answer.error=data.error;answer.pending=false;}render();};
   try{
-   const response=await fetch(api+'/api/assistant/chat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({message:question,language:en?'en':'fa',history}),signal:controller.signal});
+   const page_context=window.IPR_ASSISTANT_CONTEXT?.capture();
+   const response=await fetch(api+'/api/assistant/chat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({message:question,language:en?'en':'fa',history,page_context}),signal:controller.signal});
    if(!response.ok){let data;try{data=await response.json();}catch{}throw new Error(data?.error||(response.status===404?'not_configured':'network'));}
    if(!response.headers.get('content-type')?.includes('text/event-stream'))throw new Error('network');
    const reader=response.body.getReader(),decoder=new TextDecoder();let buffer='';

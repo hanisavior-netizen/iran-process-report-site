@@ -19,7 +19,7 @@ EN_TITLES = {'about':'Iran Process Report', 'data':'Report topics', 'reports':'R
 def build(output):
     output = output.resolve()
     template = (REPO / 'templates/site.html').read_text(encoding='utf-8')
-    for filename in ('app.js', 'i18n.js', 'page-routes.js', 'page-loading.js'):
+    for filename in ('app.js', 'i18n.js', 'page-routes.js', 'page-loading.js', 'assistant-page-context.js', 'assistant-engine.js'):
         source = SOURCE / 'assets/js' / filename
         target = output / 'assets/js' / filename
         if source.resolve() != target.resolve():
